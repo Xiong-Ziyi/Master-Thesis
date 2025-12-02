@@ -1,0 +1,675 @@
+document.addEventListener('DOMContentLoaded', function() {
+  function closest (element, selector) {
+    if (Element.prototype.closest) {
+      return element.closest(selector);
+    }
+    do {
+      if (Element.prototype.matches && element.matches(selector)
+        || Element.prototype.msMatchesSelector && element.msMatchesSelector(selector)
+        || Element.prototype.webkitMatchesSelector && element.webkitMatchesSelector(selector)) {
+        return element;
+      }
+      element = element.parentElement || element.parentNode;
+    } while (element !== null && element.nodeType === 1);
+    return null;
+  }
+
+  // social share popups
+  Array.prototype.forEach.call(document.querySelectorAll('.share a'), function(anchor) {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.open(this.href, '', 'height = 500, width = 500');
+    });
+  });
+
+  // show form controls when the textarea receives focus or backbutton is used and value exists
+  var commentContainerTextarea = document.querySelector('.comment-container textarea'),
+    commentContainerFormControls = document.querySelector('.comment-form-controls, .comment-ccs');
+
+  if (commentContainerTextarea) {
+    commentContainerTextarea.addEventListener('focus', function focusCommentContainerTextarea() {
+      commentContainerFormControls.style.display = 'block';
+      commentContainerTextarea.removeEventListener('focus', focusCommentContainerTextarea);
+    });
+
+    if (commentContainerTextarea.value !== '') {
+      commentContainerFormControls.style.display = 'block';
+    }
+  }
+
+  // Expand Request comment form when Add to conversation is clicked
+  var showRequestCommentContainerTrigger = document.querySelector('.request-container .comment-container .comment-show-container'),
+    requestCommentFields = document.querySelectorAll('.request-container .comment-container .comment-fields'),
+    requestCommentSubmit = document.querySelector('.request-container .comment-container .request-submit-comment');
+
+  if (showRequestCommentContainerTrigger) {
+    showRequestCommentContainerTrigger.addEventListener('click', function() {
+      showRequestCommentContainerTrigger.style.display = 'none';
+      Array.prototype.forEach.call(requestCommentFields, function(e) { e.style.display = 'block'; });
+      requestCommentSubmit.style.display = 'inline-block';
+
+      if (commentContainerTextarea) {
+        commentContainerTextarea.focus();
+      }
+    });
+  }
+
+  // Mark as solved button
+  var requestMarkAsSolvedButton = document.querySelector('.request-container .mark-as-solved:not([data-disabled])'),
+    requestMarkAsSolvedCheckbox = document.querySelector('.request-container .comment-container input[type=checkbox]'),
+    requestCommentSubmitButton = document.querySelector('.request-container .comment-container input[type=submit]');
+
+  if (requestMarkAsSolvedButton) {
+    requestMarkAsSolvedButton.addEventListener('click', function () {
+      requestMarkAsSolvedCheckbox.setAttribute('checked', true);
+      requestCommentSubmitButton.disabled = true;
+      this.setAttribute('data-disabled', true);
+      // Element.closest is not supported in IE11
+      closest(this, 'form').submit();
+    });
+  }
+
+  // Change Mark as solved text according to whether comment is filled
+  var requestCommentTextarea = document.querySelector('.request-container .comment-container textarea');
+
+  if (requestCommentTextarea) {
+    requestCommentTextarea.addEventListener('input', function() {
+      if (requestCommentTextarea.value === '') {
+        if (requestMarkAsSolvedButton) {
+          requestMarkAsSolvedButton.innerText = requestMarkAsSolvedButton.getAttribute('data-solve-translation');
+        }
+        requestCommentSubmitButton.disabled = true;
+      } else {
+        if (requestMarkAsSolvedButton) {
+          requestMarkAsSolvedButton.innerText = requestMarkAsSolvedButton.getAttribute('data-solve-and-submit-translation');
+        }
+        requestCommentSubmitButton.disabled = false;
+      }
+    });
+  }
+
+  // Disable submit button if textarea is empty
+  if (requestCommentTextarea && requestCommentTextarea.value === '') {
+    requestCommentSubmitButton.disabled = true;
+  }
+
+  // Submit requests filter form in the request list page
+  Array.prototype.forEach.call(document.querySelectorAll('#request-status-select, #request-organization-select'), function(el) {
+    el.addEventListener('change', function(e) {
+      e.stopPropagation();
+      closest(this, 'form').submit();
+    });
+  });
+
+  function toggleNavigation(toggleElement) {
+    var menu = document.getElementById('user-nav');
+    var isExpanded = menu.getAttribute('aria-expanded') === 'true';
+    menu.setAttribute('aria-expanded', !isExpanded);
+    toggleElement.setAttribute('aria-expanded', !isExpanded);
+  }
+
+  var burgerMenu = document.querySelector('.header .icon-menu');
+  var userMenu = document.querySelector('#user-nav');
+
+  burgerMenu.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleNavigation(this);
+  });
+
+  burgerMenu.addEventListener('keyup', function(e) {
+    if (e.keyCode === 13) { // Enter key
+      e.stopPropagation();
+      toggleNavigation(this);
+    }
+  });
+
+  userMenu.addEventListener('keyup', function(e) {
+    if (e.keyCode === 27) { // Escape key
+      e.stopPropagation();
+      this.setAttribute('aria-expanded', false);
+      burgerMenu.setAttribute('aria-expanded', false);
+    }
+  });
+
+  if (userMenu.children.length === 0) {
+    burgerMenu.style.display = 'none';
+  }
+
+  // Submit organization form in the request page
+  var requestOrganisationSelect = document.querySelector('#request-organization select');
+
+  if (requestOrganisationSelect) {
+    requestOrganisationSelect.addEventListener('change', function() {
+      closest(this, 'form').submit();
+    });
+  }
+
+  // Toggles expanded aria to collapsible elements
+  Array.prototype.forEach.call(document.querySelectorAll('.collapsible-nav, .collapsible-sidebar'), function(el) {
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isExpanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', !isExpanded);
+    });
+  });
+
+  // If a section has more than 6 subsections, we collapse the list, and show a trigger to display them all
+  const seeAllTrigger = document.querySelector("#see-all-sections-trigger");
+  const subsectionsList = document.querySelector(".section-list");
+
+  if (subsectionsList && subsectionsList.children.length > 6) {
+    seeAllTrigger.setAttribute("aria-hidden", false);
+
+    seeAllTrigger.addEventListener("click", function(e) {
+      subsectionsList.classList.remove("section-list--collapsed");
+      seeAllTrigger.parentNode.removeChild(seeAllTrigger);
+    });
+  }
+});
+
+
+//////////////////////////////////////////////////// Added by SK
+$(document).ready(function() {
+  
+  if (HelpCenter && HelpCenter.user) {
+    var isCust;
+    var isComm;
+    var isNone;
+    
+    if (HelpCenter.user.tags) {
+      // Check if user is registered for premium support    
+      HelpCenter.user.tags.forEach(function(x) {
+         if (x === 'premium') {
+           isCust = true;
+         } 
+      });
+      // Check if user is registered for community support    
+      HelpCenter.user.tags.forEach(function(y) {
+         if (y === 'community') {
+           isComm = true;
+         } 
+      });
+      // Check if user is registered for community support    
+      HelpCenter.user.tags.forEach(function(z) {
+         if (z === 'none') {
+           isNone = true;
+         } 
+      });
+
+      // If premium: set to visible customer only element (ie link to support request)
+      if (isCust === true) {
+          //$('a[href$="requests/new"]').show();
+          $('.submit-a-link-menu-item').css('display', 'inline');
+          $('.my-activities').show();
+          $('#user-menu .my-activities').show();
+          $('a.submit-a-request').show();
+          $('.premium-items').show()
+      }
+      // If community: set to visible community only element (ie link to KX)    
+      if (isComm === true) {
+        $('.community-items').css('display', 'block');
+      }
+     // If None: set to visible un-registered only element   
+      if (isNone === true) {
+        $('.unregistered-items').show()
+      }
+    }
+  }
+});
+//////////////////////////////////////////////////////////////////////
+
+//////////Styling without opening the html code/////////////Added by SK
+$(document).ready(function() {
+  
+  function insertSnippet(url,article_id){
+ 		$.getJSON(url, function(data) {
+      		body = data.article['body'];
+      		$('#'+article_id).html(body);
+      }).done(function() {
+         MathJax.Hub.Queue(["Typeset",MathJax.Hub]); 
+   });  
+  }
+   
+  //$("p:first-of-type img").attr('class','overview-image'); /////////////// .overview-image
+  
+     $("p:contains('[[')").each(function() {                            
+    text = $(this).html();
+    if (text.includes('[[snippet||')){                              /////////////// snippets
+    		article_id = text.split('[[').join('||').split(']]').join('||').split('||')[2];
+    		url = '/api/v2/help_center/articles/'+article_id+'.json';
+        //snippet_id = 'snippet'+article_id;
+      	$(this).attr('id',article_id);
+        insertSnippet(url,article_id);
+    } 
+    if (text.includes('[[note')||text.includes('[[Note')||text.includes('[[NOTE')){   
+    		text = text.split('[[').join('<span class="notes">');              ////////////// .notes
+    		text = text.split(']]').join('</span>');
+   		 $(this).html(text);
+		}
+    if (text.includes('[[||')){   
+    		text = text.split('[[||').join('<span class="notes">');              ////////////// .notes style
+    		text = text.split(']]').join('</span>');
+   		 $(this).html(text);
+		}
+    if (text.includes('.lsf]]')||text.includes('.lsfx]]')||text.includes('.fsp]]')||text.includes('.lms]]')||text.includes('.icp]]')||text.includes('.cml]]')
+       ||text.includes('.ldev]]')||text.includes('.mat]]')||text.includes('.txt]]')||text.includes('.py]]')||text.includes('.zar]]')||text.includes('.dll]]')
+       ||text.includes('.h5]')||text.includes('.zip]]')
+       ||text.includes('.xmp]]')||text.includes('.png]]')||text.includes('.ies]]')||text.includes('.zprj]]')||text.includes('.pmap]]')||text.includes('.aph]]')
+       ||text.includes('.json]]')||text.includes('.gds]]')||text.includes('.aedtz]]')||text.includes('.scdocx]]')||text.includes('.ldf]]')){   
+    		text = text.split('[[').join('<span class="notes">');              ////////////// .notes
+    		text = text.split(']]').join('</span>');
+   		 $(this).html(text);
+		}
+  }); 
+  
+  $("li:contains('[[')").each(function() {                            
+    text = $(this).html();
+    if (text.includes('[[note')||text.includes('[[Note')||text.includes('[[NOTE')){   
+    		text = text.split('[[').join('<span class="notes">');              ////////////// .notes
+    		text = text.split(']]').join('</span>');
+   		 $(this).html(text);
+		}
+    if (text.includes('.lsf]]')||text.includes('.lsfx]]')||text.includes('.fsp]]')||text.includes('.lms]]')||text.includes('.icp]]')||text.includes('.cml]]')
+       ||text.includes('.ldev]]')||text.includes('.mat]]')||text.includes('.txt]]')||text.includes('.py]]')||text.includes('.zar]]')||text.includes('.dll]]')
+       ||text.includes('.xmp]]')||text.includes('.png]]')||text.includes('.ies]]')||text.includes('.zprj]]')||text.includes('.pmap]]')||text.includes('.aph]]')
+       ||text.includes('.h5]')||text.includes('.zip]]')
+       ||text.includes('.json]]')||text.includes('.aedtz]]')||text.includes('.scdocx]]')||text.includes('.gds]]')||text.includes('.ldf]]')){   
+    		text = text.split('[[').join('<span class="notes">');              ////////////// .notes
+    		text = text.split(']]').join('</span>');
+   		 $(this).html(text);
+		}
+  }); 
+    
+  $("pre:contains('[[ver]]')").each(function() {  
+    text = $(this).html();
+    		text = text.split('[[ver').join('2025R2.1');              ////////////// Product version
+    		text = text.split(']]').join('');
+   		 $(this).html(text);
+    }); 
+  $("p:contains('[[ver]]')").each(function() {  
+    text = $(this).html();
+    		text = text.split('[[ver').join('2025R2.1');              ////////////// Product version
+    		text = text.split(']]').join('');
+   		 $(this).html(text);
+    }); 
+  $("li:contains('[[ver]]')").each(function() {  
+    text = $(this).html();
+    		text = text.split('[[ver]]').join('2025R2.1');              ////////////// Product version
+    		//text = text.split(']]').join('');
+   		 $(this).html(text);
+    }); 
+  $("pre:contains('[[verpath]]')").each(function() {  
+    text = $(this).html();
+    		text = text.split('[[verpath').join('v252');              ////////////// Product version in path
+    		text = text.split(']]').join('');
+   		 $(this).html(text);
+    }); 
+  $("p:contains('[[verpath]]')").each(function() {  
+    text = $(this).html();
+    		text = text.split('[[verpath').join('v252');              ////////////// Product version in path
+    		text = text.split(']]').join('');
+   		 $(this).html(text);
+    }); 
+      $("li:contains('[[verpath]]')").each(function() {  
+    text = $(this).html();
+    		text = text.split('[[verpath').join('v252');              ////////////// Product version in path
+    		text = text.split(']]').join('');
+   		 $(this).html(text);
+    }); 
+  
+  $("ol li:contains('[[step]]')").parent().attr('class','stepbystep');
+  $("ol li:contains('[[step]]')").parent().each(function(){
+        str = $(this).html();
+  			str = str.split('[[step]]').join('');
+    		str = str.split('[[').join('<span class="notes">');
+    		str = str.split(']]').join('</span>');
+				$(this).html(str);
+  });
+  
+  out = ''                                                        ////////// oversized file, download example
+  $("a[href*='api.lumerical.com/app-gallery/fetch-download-web'], a[href*='app-gallery-download'], a[href*='.amazonaws.com/simulation_files/'], a[href*='zendeskuploads.lumerical.com/simulation_files/'], a[href*='zendeskuploads.lumerical.com/guide_articles/'], a[href*='downloads.zemax.com']").each(function() {
+    	str = $(this).parent().html();
+   		if ($(this).html().trim()=='download example'){
+          str = str.split('</a>')[0] + ' (.zip)';
+    	}
+  		out += '<li class="attachment-item">'+str+'</li>';
+    	$(this).parent().hide();
+  });
+  if(out.length) {
+    $("ul.attachments").prepend(out);
+  } else if($(".attachment-item").length <1){
+    $(".associated-files").hide();
+  }
+  
+  $("table:contains('[[')").each(function() {
+    	text = $(this).html();
+      rows = $(this).children('tbody').children('tr').length;
+      cols = $(this).children('tbody').children('tr').children('td').length / rows;
+    	if (cols*rows < 2){                                   ///////////// .notes-box
+      		$(this).attr("class","notes-box");
+      		text = text.split('[[').join('<span class="notes">');
+      		text = text.split(']]').join('</span>');
+      		$(this).html(text);
+    	} else{                                              //////////// headed table
+        	$(this).attr("border","1"); 
+        	tr0 = $(this).children('tbody').children('tr:first')
+      		text = tr0.html();
+      		text = text.split('<td').join('<th');
+      		text = text.split('/td>').join('/th>'); 
+        	text = text.split('[[').join('||').split(']]').join('||').split('||');
+        	W = text.slice(1,cols+1);
+        	text = text[0]+text[cols+1];
+        	tr0.html(text);
+        	for (var i = 0; i < W.length; i++) {
+          		tr0.children('th:eq('+i.toString()+')').attr('style','width:'+W[i]);
+        	}
+    	}
+	});
+});
+
+///////////Tabs////////////////////Added by SK
+$(document).ready(function() {
+    $("#tab-content").find("[id^='tab']").hide(); // Hide all content
+    $("#tabs li:first").attr("id","current"); // Activate the first tab
+    $("#tab-content #tab1").fadeIn(); // Show first tab's content
+    
+    $('#tabs a').click(function(e) {
+        e.preventDefault();
+        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
+         return;       
+        }
+        else{             
+          $("#tab-content").find("[id^='tab']").hide(); // Hide all content
+          $("#tabs li").attr("id",""); //Reset id's
+          $(this).parent().attr("id","current"); // Activate this
+          $('#' + $(this).attr('name')).fadeIn(); // Show content for the current tab
+        }
+    });
+});
+
+///////////Vertical-Tabs////////////////////Added by SK
+$(document).ready(function() {
+    $("#v-tab-content").find("[id^='v-tab']").hide(); // Hide all content
+    $("#v-tabs li:first").attr("id","current"); // Activate the first tab
+    $("#v-tab-content #v-tab1").fadeIn(); // Show first tab's content
+    
+    $('#v-tabs a').click(function(e) {
+        e.preventDefault();
+        if ($(this).closest("li").attr("id") == "current"){ //detection for current tab
+         return;       
+        }
+        else{             
+          $("#v-tab-content").find("[id^='v-tab']").hide(); // Hide all content
+          $("#v-tabs li").attr("id",""); //Reset id's
+          $(this).parent().attr("id","current"); // Activate this
+          $('#' + $(this).attr('name')).fadeIn(); // Show content for the current tab
+        }
+    });
+});
+
+
+/// floating toc (added by SK)/// This script needs to come before "Floating button"
+$(document).ready(function() {
+    if ($(".art-toc").length > 0 && $("h2").length > 1 && $("h2").length <= 15) {
+  			$("div.toc").hide();
+  			out_toc = '<h3>In this article</h3>';
+  			$("h2").each(function(index,value) {
+    				h2_id = 'toc_'+(index+1).toString();
+  					name = $(this).html();
+            $(this).attr('id',h2_id);
+  					out_toc += '<p><a href="#'+h2_id+'" target="_self">'+name+'</a></p>';
+  			});
+      out_toc += '';
+  			$(".art-toc").prepend(out_toc);
+        
+        var x = $(".article").offset().left;
+  			var y = $(".article").offset().top;
+  		  $(".art-toc").css("left",x-200);
+      	$(".art-toc").css("top",y-10);
+        
+  $('#toTop').click(function(){
+    $("html, body").animate({scrollTop:0}, '300');
+  });
+  	}else{
+      $(".art-toc").hide();
+    }
+
+});
+
+
+/// Floating button ////////////////////////////// Added by GB
+$(document).ready(function() {
+  function getoffset() {
+  	var offset = 25;
+  	var onavbar = 0;
+  	var oprev = 0;
+  	var ohead = 0;
+	  if ( $("#navbar-container").length ) {
+  	  onavbar = $("#navbar-container").height();
+  	}
+  	if ( $("#preview-bar-container").length ) {
+	    oprev = $("#preview-bar-container").height();
+	  }
+	  if ( $("#navbar-container").length ) {
+	    ohead = $("#header-fixed-container").height();
+	  }
+	  offset = 50 + onavbar + oprev + ohead;
+    return offset;
+  }
+  
+  $(window).scroll(function() { 
+// Hide or display button depending on position
+		if ( $(this).scrollTop() > 50 ){
+      $("#myBtn").fadeIn();
+      $("#myIndex").fadeIn()
+    }
+    else {
+    	$("#myBtn").fadeOut();
+      $("#myIndex").fadeOut()
+      }
+  })
+  
+  $("#myBtn").click(function() {
+// scroll window back to top    
+   $("html, body").animate({scrollTop:0}, '300');
+  })
+
+  // Applied to any anchor link (href starting with #)
+  $("a[href^='#']").click(function(e) {
+    e.preventDefault();
+    var aid = $(this).attr("href");
+    var n = $(this).attr("name");
+    if ( typeof n === "undefined") {
+      n = "";
+    }
+    if  (!n.match("^v-tab")) {
+    if (aid == "#") {
+    	$('html,body').animate({scrollTop: 0},'300');  
+    } else {
+	    var offset = getoffset() + $(aid).height();
+    	$('html,body').animate({scrollTop: $(aid).offset().top-offset},'300');
+    }}
+  });
+  
+});
+
+// Added for Zemax accordion class
+document.addEventListener('DOMContentLoaded', function() {
+  var acc = document.getElementsByClassName("accordion");
+  var i;
+
+  for (i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var panel = this.nextElementSibling;
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  }
+});
+
+// ZOOMIFY (expand images by clicking on them) -  Added by GB
+$(document).ready(function(){
+	// initialization
+	Zoomify = function (element, options) {
+    var that = this;
+		    
+		this._zooming = false;
+		this._zoomed  = false;
+		this._timeout = null;
+		this.$shadow  = null;
+		this.$image   = $(element).addClass('zoomify');
+		this.options  = $.extend({}, Zoomify.DEFAULTS, this.$image.data(), options);
+		
+		this.$image.on('click', function () { that.zoom(); });
+		$(window).on('resize', function () { that.reposition(); });
+		$(document).on('scroll', function () { that.reposition(); });
+		$(window).on('keyup', function (e) { 
+			if (that._zoomed && e.keyCode == 27)
+				that.zoomOut();
+		 });
+  };
+	Zoomify.DEFAULTS = {
+		duration: 200,
+		easing:   'linear',
+		scale:    0.9
+  };
+	
+	// css utilities
+	Zoomify.prototype.transition = function ($element, value) {
+		$element.css({
+			'-webkit-transition': value,
+			'-moz-transition': value,
+			'-ms-transition': value,
+			'-o-transition': value,
+			'transition': value
+		});
+	};
+	Zoomify.prototype.addTransition = function ($element) {
+		this.transition($element, 'all ' + this.options.duration + 'ms ' + this.options.easing);
+	};
+	Zoomify.prototype.removeTransition = function ($element, callback) {
+		var that = this;
+		
+		clearTimeout(this._timeout);
+		this._timeout = setTimeout(function () {
+			that.transition($element, '');
+			if ($.isFunction(callback)) callback.call(that);
+		}, this.options.duration);
+	};
+	Zoomify.prototype.transform = function (value) {
+		this.$image.css({
+			'-webkit-transform': value,
+			'-moz-transform': value,
+			'-ms-transform': value,
+			'-o-transform': value,
+			'transform': value
+		});
+	};
+	Zoomify.prototype.transformScaleAndTranslate = function (scale, translateX, translateY, callback) {
+		this.addTransition(this.$image);
+		this.transform('scale(' + scale + ') translate(' + translateX + 'px, ' + translateY + 'px)');
+		this.removeTransition(this.$image, callback);
+	};
+	
+	// zooming functions
+	Zoomify.prototype.zoom = function () {
+		if (this._zooming) return;
+		
+		if (this._zoomed) this.zoomOut();
+		else this.zoomIn();
+	};
+	Zoomify.prototype.zoomIn = function () {
+		var that      = this,
+			transform = this.$image.css('transform');
+		
+		this.transition(this.$image, 'none');
+		this.transform('none');
+		
+		var offset     = this.$image.offset(),
+			width      = this.$image.outerWidth(),
+			height     = this.$image.outerHeight(),
+			nWidth     = this.$image[0].naturalWidth || +Infinity,
+			nHeight    = this.$image[0].naturalHeight || +Infinity,
+			wWidth     = $(window).width(),
+			wHeight    = $(window).height(),
+			scaleX     = Math.min(nWidth, wWidth * this.options.scale) / width,
+			scaleY     = Math.min(nHeight, wHeight * this.options.scale) / height,
+			scale      = Math.min(scaleX, scaleY),
+			translateX = (-offset.left + (wWidth - width) / 2) / scale,
+			translateY = (-offset.top + (wHeight - height) / 2 + $(document).scrollTop()) / scale;
+		
+		this.transform(transform);
+		
+		this._zooming = true;
+		this.$image.addClass('zoomed').trigger('zoom-in.zoomify');
+		setTimeout(function () {
+			that.addShadow();
+			that.transformScaleAndTranslate(scale, translateX, translateY, function () {
+				that._zooming = false;
+				that.$image.trigger('zoom-in-complete.zoomify');
+			});
+			that._zoomed = true;
+		});
+	};
+	Zoomify.prototype.zoomOut = function () {
+		var that = this;
+		
+		this._zooming = true;
+		this.$image.trigger('zoom-out.zoomify');
+		this.transformScaleAndTranslate(1, 0, 0, function () {
+			that._zooming = false;
+			that.$image.removeClass('zoomed').trigger('zoom-out-complete.zoomify');
+		});
+		this.removeShadow();
+		this._zoomed = false;
+	};
+	
+	// page listener callbacks
+	Zoomify.prototype.reposition = function () {
+		if (this._zoomed) {
+			this.transition(this.$image, 'none');
+			this.zoomIn();
+		}
+	};
+	
+	// shadow background
+	Zoomify.prototype.addShadow = function () {
+		var that = this;
+		if (this._zoomed) return;
+		
+		if (that.$shadow) that.$shadow.remove();
+		this.$shadow = $('<div class="zoomify-shadow"></div>');
+		$('body').append(this.$shadow);
+		this.addTransition(this.$shadow);
+		this.$shadow.on('click', function () { that.zoomOut(); })
+		
+		setTimeout(function () { that.$shadow.addClass('zoomed'); }, 10);
+	};
+	Zoomify.prototype.removeShadow = function () {
+		var that = this;
+		if (!this.$shadow) return;
+		
+		this.addTransition(this.$shadow);
+		this.$shadow.removeClass('zoomed');
+		this.$image.one('zoom-out-complete.zoomify', function () {
+			if (that.$shadow) that.$shadow.remove();
+			that.$shadow = null;
+		});
+	};
+	
+	// plugin definition
+	$.fn.zoomify = function (option) {
+		return this.each(function () {
+			var $this   = $(this),
+				zoomify = $this.data('zoomify');
+			
+			if (!zoomify) $this.data('zoomify', (zoomify = new Zoomify(this, typeof option == 'object' && option)));
+			if (typeof option == 'string' && ['zoom', 'zoomIn', 'zoomOut', 'reposition'].indexOf(option) >= 0) zoomify[option]();
+		});
+	}; 
+  $("img").not("[src*='download-example.png']").not("[src*='course']").not("[src*='Course']").not("[src*='assets']").not("[class*='avatar']").not("[src*='logo']").not("[src*='images.ansys.com']").zoomify();
+})
