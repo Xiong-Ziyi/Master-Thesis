@@ -1,0 +1,7 @@
+﻿  ud_segmented_surface.c
+     Creating library D:\Msc.Photonics\Master Thesis\Nested Lens\User-defined object solution\Segmented_Surface\us_segmented_surface\x64\Release\us_segmented_surface.lib and object D:\Msc.Photonics\Master Thesis\Nested Lens\User-defined object solution\Segmented_Surface\us_segmented_surface\x64\Release\us_segmented_surface.exp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 9 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  us_segmented_surface.vcxproj -> D:\Msc.Photonics\Master Thesis\Nested Lens\User-defined object solution\Segmented_Surface\us_segmented_surface\x64\Release\us_segmented_surface.dll

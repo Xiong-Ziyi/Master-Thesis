@@ -1,0 +1,63 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Msc.Photonics\\Master Thesis\\Nested Lens\\User-defined object solution\\Segmented_Surface\\us_segmented_surface\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0641244D-81A5-4987-824E-2C3871D0AE5A}|us_segmented_surface\\us_segmented_surface.vcxproj|D:\\Msc.Photonics\\Master Thesis\\Nested Lens\\User-defined object solution\\Segmented_Surface\\ud_segmented_surface.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Zemax 2025\\ANSYS Inc\\v252\\Zemax OpticStudio\\ZemaxData\\DLL\\Surfaces\\us_anasp.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "us_anasp.c",
+              "DocumentMoniker": "D:\\Zemax 2025\\ANSYS Inc\\v252\\Zemax OpticStudio\\ZemaxData\\DLL\\Surfaces\\us_anasp.c",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Zemax 2025\\ANSYS Inc\\v252\\Zemax OpticStudio\\ZemaxData\\DLL\\Surfaces\\us_anasp.c",
+              "ToolTip": "D:\\Zemax 2025\\ANSYS Inc\\v252\\Zemax OpticStudio\\ZemaxData\\DLL\\Surfaces\\us_anasp.c",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Zemax 2025\\ANSYS Inc\\v252\\Zemax OpticStudio\\ZemaxData\\DLL\\Surfaces\\us_anasp.c",
+              "ViewState": "AgIAAOQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-12-03T19:11:43.312Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ud_segmented_surface.c",
+              "DocumentMoniker": "D:\\Msc.Photonics\\Master Thesis\\Nested Lens\\User-defined object solution\\Segmented_Surface\\ud_segmented_surface.c",
+              "RelativeDocumentMoniker": "..\\ud_segmented_surface.c",
+              "ToolTip": "D:\\Msc.Photonics\\Master Thesis\\Nested Lens\\User-defined object solution\\Segmented_Surface\\ud_segmented_surface.c",
+              "RelativeToolTip": "..\\ud_segmented_surface.c",
+              "ViewState": "AgIAAEcBAAAAAAAAAAAQwGQBAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-12-03T18:47:53.267Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
