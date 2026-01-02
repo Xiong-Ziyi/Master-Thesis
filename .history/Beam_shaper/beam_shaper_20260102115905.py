@@ -96,7 +96,7 @@ class BeamShaper:
         """
         Returns the vertex radius of the first aspherical surface.
         """
-        return -self.s_prime_zero * (self.n - 1)
+        return self.s_prime_zero * (self.n - 1)
 
     @property
     def k_2(self) -> float:
