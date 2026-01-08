@@ -1,6 +1,9 @@
-import clr, os, winreg
+import clr
+import os
+import winreg
 from itertools import islice
 import numpy as np
+import matplotlib.pyplot as plt
 
 class PythonZOSConnection(object):
     class LicenseException(Exception):
@@ -55,7 +58,7 @@ class PythonZOSConnection(object):
         if self.TheApplication is None:
             raise PythonZOSConnection.InitializationException("Unable to acquire ZOSAPI application")
 
-        if self.TheApplication.IsValidLicenseForAPI == False:
+        if not self.TheApplication.IsValidLicenseForAPI:
             raise PythonZOSConnection.LicenseException("License is not valid for ZOSAPI use")
 
         self.TheSystem = self.TheApplication.PrimarySystem
@@ -129,21 +132,42 @@ class PythonZOSConnection(object):
             data = list(data)
         return list(map(list, zip(*data)))
     
-    def gia_plots(self, data, x, y, transpose = False):
-        """Converts a System.Double[,] from GIA to a NumPy array for plotting or post processing
+    def gia_plots(self, data, x, y, transpose = False) -> None:
+        """Converts a System.Double[,] (DataGrids) from GeometricImageAnalysis to a NumPy array and plot a heatmap and a cross-section.
+        
+        By Ziyi Xiong 2026/01
         
         Parameters
         ----------
         data      : System.Double[,] data directly from ZOS-API 
-        x         : x width of new 2D list [use var.GetLength(0) for dimension]
-        y         : y width of new 2D list [use var.GetLength(1) for dimension]
+        x         : x width of new 2D list [use data.Values.GetLength(0) for dimension]
+        y         : y width of new 2D list [use data.Values.GetLength(1) for dimension]
         transpose : transposes data; needed for some multi-dimensional line series data
         
         Returns
         -------
-        vals      : 2D NumPy array; can be directly used with Matplotlib
+        None: Displays plots using Matplotlib
+
         """
-        vals = self.reshape(data, x, y, transpose)
-        vals = np.asarray(vals, dtype=float)
-        return vals
-        
+        img = self.reshape(data, x, y, transpose)
+        img = np.asarray(img, dtype=float)
+
+        # Create side-by-side axes so outputs share a single row and size
+        fig, axes = plt.subplots(1, 2, figsize=(10, 4), constrained_layout=True)
+
+        # 2D image
+        im = axes[0].imshow(img, extent=[-1 , 1, -1, 1], origin="lower", cmap="inferno")
+        fig.colorbar(im, ax=axes[0], label="Irradiance")
+        axes[0].set_title("Geometric Image Analysis")
+
+        # Cross section through the center row
+        mid = img.shape[0] // 2
+        x_line = np.linspace(-1, 1, img.shape[1])
+        axes[1].plot(x_line, img[mid, :], label="Center row")
+        axes[1].set_xlabel("Normalized X")
+        axes[1].set_ylabel("Irradiance")
+        axes[1].grid()
+        axes[1].legend()
+        axes[1].set_title("Geometric Image Analysis")
+
+        plt.show()

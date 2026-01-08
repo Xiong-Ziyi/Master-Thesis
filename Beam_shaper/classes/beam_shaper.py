@@ -3,13 +3,15 @@ import numpy as np
 
 class BeamShaper:
     """
-    This class is to model a Keplerian or Galilean beam shaper.
+    This class is to model a initial Keplerian or Galilean beam shaper.
 
     This implementation is based on the formula provided in:
     - Title: "Laser Beam Shaping: Theory and Techniques"
       Editor: Fred M. Dickey
       Chapter: 7
       Edition: 2nd
+      
+    By Ziyi Xiong 2025/12
 
     Args:
         omega_0 (float): The radius of the input Gaussian beam waist.
@@ -140,3 +142,23 @@ class BeamShaper:
             "k_1": float(self.k_1),
             "k_2": float(self.k_2),
         }
+
+'''class BeamShaperFitter:
+    """
+    This class is to fit Galilean and Keplerian beam shapers' two surfaces' sags with conventional optics surface equation.
+    
+    This implementation is based on the formula provided in:
+    - Title: "Laser Beam Shaping: Theory and Techniques"
+      Editor: Fred M. Dickey
+      Chapter: 7
+      Edition: 2nd
+      
+    By Ziyi Xiong 2026/01
+
+    Args:
+        expansion_ratio (float): The desired expansion ratio.
+        apodization_factor (float): The desired apodization factor.
+    """
+
+    def __init__(self, expansion_ratio: float, apodization_factor: float):'''
+        
