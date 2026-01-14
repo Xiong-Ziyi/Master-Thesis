@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
 from scipy.optimize import least_squares 
-from typing import Optional
+
 class BeamShaper:
     """
     This class is to model a initial Keplerian or Galilean beam shaper.
@@ -132,7 +132,7 @@ class BeamShaper:
         Returns the apodization factor of the beam shaper.
         """
         return (self.r_max / self.omega_0)**2
-  
+
     @property
     def result(self) -> dict:
         """
@@ -144,7 +144,6 @@ class BeamShaper:
             "k_1": float(self.k_1),
             "k_2": float(self.k_2),
         }
-
 
 class EvenAsphere:
     '''
@@ -223,42 +222,32 @@ class BeamShaperFitter:
         num_samples (int): Number of radial samples to compute.
     '''
     def __init__(self, 
-                 beam_shaper: BeamShaper, 
+                 omega_0: float, 
+                 r_max: float, 
+                 R_max: float, 
+                 d: float, 
+                 n: float, 
+                 type: str ="Keplerian", 
                  num_samples: int = 100
                  ):
-        self.beam_shaper = beam_shaper
-        self.omega_0 = beam_shaper.omega_0
-        self.r_max = beam_shaper.r_max
-        self.R_max = beam_shaper.R_max
-        self.d = beam_shaper.d
-        self.n = beam_shaper.n
-        self.r = np.linspace(0, beam_shaper.r_max, num_samples)
-        self.R = np.linspace(0, beam_shaper.R_max, num_samples)
+        self.omega_0 = omega_0
+        self.r_max = r_max
+        self.R_max = R_max
+        self.d = d
+        self.n = n
+        self.r = np.linspace(0, r_max, num_samples)
+        self.R = np.linspace(0, R_max, num_samples)
         
-        if beam_shaper.type not in ["Keplerian", "Galilean"]:
+        if type not in ["Keplerian", "Galilean"]:
             raise ValueError("type must be either 'Keplerian' or 'Galilean'")
         
-        self.type = beam_shaper.type
+        self.type = type
         self.num_samples = num_samples
         
-    def plot(self, x: np.ndarray, 
-             y1: np.ndarray, 
-             xlabel: str, 
-             ylabel1: str, 
-             title: str, 
-             y2: Optional[np.ndarray] = None, 
-             ylabel2: Optional[str] = None
-             ):
-        plt.plot(x, y1, label=ylabel1)
-        
-        if y2 is not None:
-            plt.plot(x, y2, label=ylabel2)
-            plt.legend()
-        else:
-            plt.legend()
-            
+    def plot(self, x: np.ndarray, y: np.ndarray, xlabel: str, ylabel: str, title: str):
+        plt.plot(x, y)
         plt.xlabel(xlabel)
-        plt.ylabel(ylabel1)
+        plt.ylabel(ylabel)
         plt.title(title)
         plt.grid()
         plt.show()
@@ -281,7 +270,7 @@ class BeamShaperFitter:
         
         if plot:
             self.plot(self.r, R_r, "Input radial coordinate r", "Output radial coordinate R", f"{self.type} Beam Shaper Mapping")
-        
+    
         return R_r 
     
     def r_from_R(self, plot: bool = False) -> np.ndarray: 
@@ -298,10 +287,10 @@ class BeamShaperFitter:
         
         if self.type == "Keplerian":
             r_R = -r_R
-        
+            
         if plot:
             self.plot(self.R, r_R, "Output radial coordinate R", "Input radial coordinate r", f"{self.type} Beam Shaper Inverse Mapping")
-        
+            
         return r_R    
     
     def grad_sag1(self, plot: bool = False) -> np.ndarray:
@@ -364,15 +353,15 @@ class BeamShaperFitter:
             self.plot(sag_R, self.R, "Sag of Surface 2", "Output radial coordinate R", f"{self.type} Beam Shaper Surface 2 Sag")
             
         return sag_R
-        
+    
     def ls_fit(self, 
-               ea1: Optional[EvenAsphere] = None,
-               ea2: Optional[EvenAsphere] = None, 
+               vertex_r = None, 
+               k = None, 
+               coeffs: dict = {}, 
                fit_type: str = "sag", 
-               bounds: dict = {'surface1': {'vertex_r_min': -10000, 'vertex_r_max': 10000, 'k_min': -1000, 'k_max': 1000},
-                              'surface2': {'vertex_r_min': -10000, 'vertex_r_max': 10000, 'k_min': -1000, 'k_max': 1000}},
-               verbose: bool = False,
-               compare: bool = False,
+               fit_surface: int = 1,
+               bounds: tuple = ([-10000, -1000] , [10000, 1000]),
+               verbose: bool = False
                ) -> dict:
         
         '''
@@ -388,137 +377,60 @@ class BeamShaperFitter:
             verbose (bool): If True, prints detailed optimization information.
         '''
         
-        if ea1 is None or ea2 is None:
-            raise ValueError("ea1 and ea2 must be provided as EvenAsphere instances for surface 1 and surface 2 respectively.")
+        if fit_surface == 1:
+            r_data = self.r
+            z_data = self.sag1() if fit_type == "sag" else self.grad_sag1()
+        elif fit_surface == 2:
+            r_data = self.R
+            z_data = self.sag2() if fit_type == "sag" else self.grad_sag2()
+        else:
+            raise ValueError("fit_surface must be either 1 or 2, fit_type must be either 'sag' or 'grad_sag'")
         
-        # Get the target sag or gradient of sag data to fit
-        z_data = self.sag1() if fit_type == "sag" else self.grad_sag1()
-        Z_data = self.sag2() if fit_type == "sag" else self.grad_sag2()
+        if vertex_r is None or k is None:
+            initial = BeamShaper(
+                omega_0=self.omega_0,
+                R_max=self.R_max,
+                r_max=self.r_max,
+                d=self.d,
+                n=self.n,
+                type=self.type,
+                approx=True,
+                )
+            if fit_surface == 1:
+                vertex_r = initial.r_c1
+                k = initial.k_1
+            else:
+                vertex_r = initial.r_c2
+                k = initial.k_2
         
         # Get initial parameter list
-        coeffs_list1 = [ea1.coefficients.get(i, 0.0) for i in sorted(ea1.coefficients.keys())]
-        p01 = [ea1.vertex_r, ea1.k] + coeffs_list1
+        coeffs_list = [coeffs.get(i, 0.0) for i in sorted(coeffs.keys())]
+        p0 = [vertex_r, k] + coeffs_list
         
-        coeffs_list2 = [ea2.coefficients.get(i, 0.0) for i in sorted(ea2.coefficients.keys())]
-        p02 = [ea2.vertex_r, ea2.k] + coeffs_list2
-        
-        p0 = np.array(p01 + p02, dtype=float)
-        l1, l2 = len(p01), len(p02)
-        
-        num_coeffs1 = len(coeffs_list1)
-        num_coeffs2 = len(coeffs_list2)
-        
-        # Set bounds for optimization
-        s1_bounds = bounds['surface1']
-        s2_bounds = bounds['surface2']
-        
-        vr1_min = s1_bounds['vertex_r_min']
-        vr1_max = s1_bounds['vertex_r_max']
-        k1_min = s1_bounds['k_min']
-        k1_max = s1_bounds['k_max']
-        
-        vr2_min = s2_bounds['vertex_r_min']
-        vr2_max = s2_bounds['vertex_r_max']
-        k2_min = s2_bounds['k_min']
-        k2_max = s2_bounds['k_max']
-        
-        lb_s1 = [vr1_min, k1_min] + [-np.inf]*num_coeffs1
-        ub_s1 = [vr1_max, k1_max] + [np.inf]*num_coeffs1
-        lb_s2 = [vr2_min, k2_min] + [-np.inf]*num_coeffs2
-        ub_s2 = [vr2_max, k2_max] + [np.inf]*num_coeffs2
-        
-        lb = np.array(lb_s1 + lb_s2, dtype=float)
-        ub = np.array(ub_s1 + ub_s2, dtype=float)
-        
-        bounds_tuple = (lb, ub)
-        
-        # Define the residuals function for least squares optimization
         def residuals(params):
             '''
             Computes the residuals between the data and the fitted aspheric surface for later optimization.
-            
-            Args:
-                params: 1D vector
             '''
-            
-            params1 = params[:l1]
-            params2 = params[l1:l1+l2]
-            
-            vertex_r1_fit = params1[0]
-            k1_fit = params1[1]
-            coeffs1_fit = {4 + 2*i: params1[i + 2] for i in range(len(params1) - 2)}
-            ea1_fit = EvenAsphere(r_max=self.r_max, vertex_r=vertex_r1_fit, k=k1_fit, coefficients=coeffs1_fit, num_samples=self.num_samples)
-            z_fit = ea1_fit.sag() if fit_type == "sag" else ea1_fit.grad_sag()
-            
-            # Ensure the paraxial effective focal length to be infinity
-            params2[0] = self.d * (self.n - 1) + vertex_r1_fit
-            
-            vertex_r2_fit = params2[0]
-            k2_fit = params2[1]
-            coeffs2_fit = {4 + 2*i: params2[i + 2] for i in range(len(params2) - 2)}
-            ea2_fit = EvenAsphere(r_max = self.R_max, vertex_r=vertex_r2_fit, k = k2_fit, coefficients=coeffs2_fit, num_samples=self.num_samples)
-            Z_fit = ea2_fit.sag() if fit_type == 'sag' else ea2_fit.grad_sag()
-            
-            return np.concatenate([(z_data - z_fit), (Z_data - Z_fit)])
+            vertex_r_fit = params[0]
+            k_fit = params[1]
+            coeffs_fit = {4 + 2*i: params[i + 2] for i in range(len(params) - 2)}
+            ea = EvenAsphere(r_max=r_data[-1], vertex_r=vertex_r_fit, k=k_fit, coefficients=coeffs_fit, num_samples=len(r_data))
+            z_fit = ea.sag() if fit_type == "sag" else ea.grad_sag()
+            return z_data - z_fit
         
         # Perform least squares optimization, trf for Trust Region Reflective algorithm
-        result = least_squares(residuals, p0, bounds = bounds_tuple, method='trf', ftol=1e-10, xtol=1e-10, gtol=1e-10, verbose=2 if verbose else 0)
+        result = least_squares(residuals, p0, bounds = bounds, method='trf', ftol=1e-10, xtol=1e-10, gtol=1e-10, verbose=2 if verbose else 0)
         
-        # Extract fitted parameters
-        x=result.x
-        p1 = x[:l1]
-        p2 = x[l1:l1+l2]
+        fitted_vr = result.x[0]
+        fitted_k = result.x[1]
+        fitted_coeffs = {4+2*i: result.x[i + 2] for i in range(len(result.x) - 2)}
         
-        fitted_vr1, fitted_k1 = p1[0], p1[1]
-        fitted_coeffs1 = {4+2*i: p1[i + 2] for i in range(len(p1) - 2)}
-        
-        fitted_vr2, fitted_k2 = p2[0], p2[1]
-        fitted_coeffs2 = {4+i*2: p2[i + 2] for i in range(len(p2) - 2)}
-                
         rms = np.sqrt(np.mean(residuals(result.x)**2))
         
-        # Plot comparison if needed
-        if compare:
-            ea1_fitted = EvenAsphere(
-                r_max = self.r_max, 
-                vertex_r = fitted_vr1,
-                k = fitted_k1,
-                coefficients = fitted_coeffs1,
-                num_samples = self.num_samples
-            )
-            ea2_fitted = EvenAsphere(
-                r_max = self.R_max,
-                vertex_r = fitted_vr2,
-                k = fitted_k2,
-                coefficients = fitted_coeffs2,
-                num_samples = self.num_samples
-            )
-            
-            # Plot surface 1
-            self.plot(x=self.r, 
-                      y1 = self.sag1(),
-                      y2 = ea1_fitted.sag(),
-                      title = f"Surface1 {fit_type} fit Data", 
-                      xlabel = "Radial Coordinate", 
-                      ylabel1 = f"{self.type} Beam Shaper Surface 1 Sag",
-                      ylabel2 = f"{self.type} Beam Shaper Surface 1 Fitted Sag by {fit_type} Fitting")
-            
-            self.plot(self.r, self.sag1() - ea1_fitted.sag(), f"Residuals of {fit_type} fit", "Radial Coordinate", f"{self.type} Beam Shaper Surface 1 {fit_type} fit Residuals")
-            
-            # Plot surface 2
-            self.plot(x=self.R, 
-                      y1 = self.sag2(),
-                        y2 = ea2_fitted.sag(),
-                      title = f"Surface2 {fit_type} fit Data", 
-                      xlabel = "Radial Coordinate", 
-                      ylabel1 = f"{self.type} Beam Shaper Surface 2 Sag",
-                      ylabel2 = f"{self.type} Beam Shaper Surface 2 Fitted Sag by {fit_type} Fitting")
-            
-            self.plot(self.R, self.sag2() - ea2_fitted.sag(), f"Residuals of {fit_type} fit", "Radial Coordinate", f"{self.type} Beam Shaper Surface 2 {fit_type} fit Residuals")
-        
         return {
-            "surface1": {"vertex_r": fitted_vr1, "k": fitted_k1, "coefficients": fitted_coeffs1},
-            "surface2": {"vertex_r": fitted_vr2, "k": fitted_k2, "coefficients": fitted_coeffs2},
+            "vertex_r": fitted_vr,
+            "k": fitted_k,
+            "coefficients": fitted_coeffs,
             "rms": rms,
             "cost": result.cost,
             "success": result.success,

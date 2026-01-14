@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
 from scipy.optimize import least_squares 
-from typing import Optional
+
 class BeamShaper:
     """
     This class is to model a initial Keplerian or Galilean beam shaper.
@@ -145,6 +145,12 @@ class BeamShaper:
             "k_2": float(self.k_2),
         }
 
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import cumulative_trapezoid
+from scipy.optimize import least_squares
+from classes.beam_shaper import BeamShaper
+from typing import Optional
 
 class EvenAsphere:
     '''
@@ -241,24 +247,10 @@ class BeamShaperFitter:
         self.type = beam_shaper.type
         self.num_samples = num_samples
         
-    def plot(self, x: np.ndarray, 
-             y1: np.ndarray, 
-             xlabel: str, 
-             ylabel1: str, 
-             title: str, 
-             y2: Optional[np.ndarray] = None, 
-             ylabel2: Optional[str] = None
-             ):
-        plt.plot(x, y1, label=ylabel1)
-        
-        if y2 is not None:
-            plt.plot(x, y2, label=ylabel2)
-            plt.legend()
-        else:
-            plt.legend()
-            
+    def plot(self, x: np.ndarray, y: np.ndarray, xlabel: str, ylabel: str, title: str):
+        plt.plot(x, y)
         plt.xlabel(xlabel)
-        plt.ylabel(ylabel1)
+        plt.ylabel(ylabel)
         plt.title(title)
         plt.grid()
         plt.show()
@@ -281,7 +273,7 @@ class BeamShaperFitter:
         
         if plot:
             self.plot(self.r, R_r, "Input radial coordinate r", "Output radial coordinate R", f"{self.type} Beam Shaper Mapping")
-        
+    
         return R_r 
     
     def r_from_R(self, plot: bool = False) -> np.ndarray: 
@@ -298,10 +290,10 @@ class BeamShaperFitter:
         
         if self.type == "Keplerian":
             r_R = -r_R
-        
+            
         if plot:
             self.plot(self.R, r_R, "Output radial coordinate R", "Input radial coordinate r", f"{self.type} Beam Shaper Inverse Mapping")
-        
+            
         return r_R    
     
     def grad_sag1(self, plot: bool = False) -> np.ndarray:
@@ -371,8 +363,7 @@ class BeamShaperFitter:
                fit_type: str = "sag", 
                bounds: dict = {'surface1': {'vertex_r_min': -10000, 'vertex_r_max': 10000, 'k_min': -1000, 'k_max': 1000},
                               'surface2': {'vertex_r_min': -10000, 'vertex_r_max': 10000, 'k_min': -1000, 'k_max': 1000}},
-               verbose: bool = False,
-               compare: bool = False,
+               verbose: bool = False
                ) -> dict:
         
         '''
@@ -388,12 +379,38 @@ class BeamShaperFitter:
             verbose (bool): If True, prints detailed optimization information.
         '''
         
-        if ea1 is None or ea2 is None:
-            raise ValueError("ea1 and ea2 must be provided as EvenAsphere instances for surface 1 and surface 2 respectively.")
-        
-        # Get the target sag or gradient of sag data to fit
         z_data = self.sag1() if fit_type == "sag" else self.grad_sag1()
         Z_data = self.sag2() if fit_type == "sag" else self.grad_sag2()
+        
+        s1_bounds = bounds['surface1']
+        s2_bounds = bounds['surface2']
+        
+        vr1_min = s1_bounds['vertex_r_min']
+        vr1_max = s1_bounds['vertex_r_max']
+        k1_min = s1_bounds['k_min']
+        k1_max = s1_bounds['k_max']
+        
+        vr2_min = s2_bounds['vertex_r_min']
+        vr2_max = s2_bounds['vertex_r_max']
+        k2_min = s2_bounds['k_min']
+        k2_max = s2_bounds['k_max']
+        
+        if ea1 is None:
+            ea1 = EvenAsphere(
+                r_max = self.r_max,
+                vertex_r=self.beam_shaper.r_c1,
+                k = self.beam_shaper.k_1,
+                coefficients={},
+                num_samples=self.num_samples,
+            )
+        if ea2 is None:
+            ea2 = EvenAsphere(
+                r_max= self.beam_shaper.R_max,
+                vertex_r = self.beam_shaper.r_c2,
+                k = self.beam_shaper.k_2,
+                coefficients={},
+                num_samples=self.num_samples,
+            )
         
         # Get initial parameter list
         coeffs_list1 = [ea1.coefficients.get(i, 0.0) for i in sorted(ea1.coefficients.keys())]
@@ -408,20 +425,6 @@ class BeamShaperFitter:
         num_coeffs1 = len(coeffs_list1)
         num_coeffs2 = len(coeffs_list2)
         
-        # Set bounds for optimization
-        s1_bounds = bounds['surface1']
-        s2_bounds = bounds['surface2']
-        
-        vr1_min = s1_bounds['vertex_r_min']
-        vr1_max = s1_bounds['vertex_r_max']
-        k1_min = s1_bounds['k_min']
-        k1_max = s1_bounds['k_max']
-        
-        vr2_min = s2_bounds['vertex_r_min']
-        vr2_max = s2_bounds['vertex_r_max']
-        k2_min = s2_bounds['k_min']
-        k2_max = s2_bounds['k_max']
-        
         lb_s1 = [vr1_min, k1_min] + [-np.inf]*num_coeffs1
         ub_s1 = [vr1_max, k1_max] + [np.inf]*num_coeffs1
         lb_s2 = [vr2_min, k2_min] + [-np.inf]*num_coeffs2
@@ -432,7 +435,6 @@ class BeamShaperFitter:
         
         bounds_tuple = (lb, ub)
         
-        # Define the residuals function for least squares optimization
         def residuals(params):
             '''
             Computes the residuals between the data and the fitted aspheric surface for later optimization.
@@ -459,12 +461,11 @@ class BeamShaperFitter:
             ea2_fit = EvenAsphere(r_max = self.R_max, vertex_r=vertex_r2_fit, k = k2_fit, coefficients=coeffs2_fit, num_samples=self.num_samples)
             Z_fit = ea2_fit.sag() if fit_type == 'sag' else ea2_fit.grad_sag()
             
-            return np.concatenate([(z_data - z_fit), (Z_data - Z_fit)])
+            return (z_data - z_fit) + (Z_data - Z_fit)
         
         # Perform least squares optimization, trf for Trust Region Reflective algorithm
         result = least_squares(residuals, p0, bounds = bounds_tuple, method='trf', ftol=1e-10, xtol=1e-10, gtol=1e-10, verbose=2 if verbose else 0)
         
-        # Extract fitted parameters
         x=result.x
         p1 = x[:l1]
         p2 = x[l1:l1+l2]
@@ -477,45 +478,6 @@ class BeamShaperFitter:
                 
         rms = np.sqrt(np.mean(residuals(result.x)**2))
         
-        # Plot comparison if needed
-        if compare:
-            ea1_fitted = EvenAsphere(
-                r_max = self.r_max, 
-                vertex_r = fitted_vr1,
-                k = fitted_k1,
-                coefficients = fitted_coeffs1,
-                num_samples = self.num_samples
-            )
-            ea2_fitted = EvenAsphere(
-                r_max = self.R_max,
-                vertex_r = fitted_vr2,
-                k = fitted_k2,
-                coefficients = fitted_coeffs2,
-                num_samples = self.num_samples
-            )
-            
-            # Plot surface 1
-            self.plot(x=self.r, 
-                      y1 = self.sag1(),
-                      y2 = ea1_fitted.sag(),
-                      title = f"Surface1 {fit_type} fit Data", 
-                      xlabel = "Radial Coordinate", 
-                      ylabel1 = f"{self.type} Beam Shaper Surface 1 Sag",
-                      ylabel2 = f"{self.type} Beam Shaper Surface 1 Fitted Sag by {fit_type} Fitting")
-            
-            self.plot(self.r, self.sag1() - ea1_fitted.sag(), f"Residuals of {fit_type} fit", "Radial Coordinate", f"{self.type} Beam Shaper Surface 1 {fit_type} fit Residuals")
-            
-            # Plot surface 2
-            self.plot(x=self.R, 
-                      y1 = self.sag2(),
-                        y2 = ea2_fitted.sag(),
-                      title = f"Surface2 {fit_type} fit Data", 
-                      xlabel = "Radial Coordinate", 
-                      ylabel1 = f"{self.type} Beam Shaper Surface 2 Sag",
-                      ylabel2 = f"{self.type} Beam Shaper Surface 2 Fitted Sag by {fit_type} Fitting")
-            
-            self.plot(self.R, self.sag2() - ea2_fitted.sag(), f"Residuals of {fit_type} fit", "Radial Coordinate", f"{self.type} Beam Shaper Surface 2 {fit_type} fit Residuals")
-        
         return {
             "surface1": {"vertex_r": fitted_vr1, "k": fitted_k1, "coefficients": fitted_coeffs1},
             "surface2": {"vertex_r": fitted_vr2, "k": fitted_k2, "coefficients": fitted_coeffs2},
@@ -525,4 +487,3 @@ class BeamShaperFitter:
             "message": result.message,
             "nfev": result.nfev
         }
-        

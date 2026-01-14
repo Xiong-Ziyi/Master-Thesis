@@ -464,7 +464,6 @@ class BeamShaperFitter:
         # Perform least squares optimization, trf for Trust Region Reflective algorithm
         result = least_squares(residuals, p0, bounds = bounds_tuple, method='trf', ftol=1e-10, xtol=1e-10, gtol=1e-10, verbose=2 if verbose else 0)
         
-        # Extract fitted parameters
         x=result.x
         p1 = x[:l1]
         p2 = x[l1:l1+l2]
@@ -477,7 +476,6 @@ class BeamShaperFitter:
                 
         rms = np.sqrt(np.mean(residuals(result.x)**2))
         
-        # Plot comparison if needed
         if compare:
             ea1_fitted = EvenAsphere(
                 r_max = self.r_max, 

@@ -391,9 +391,21 @@ class BeamShaperFitter:
         if ea1 is None or ea2 is None:
             raise ValueError("ea1 and ea2 must be provided as EvenAsphere instances for surface 1 and surface 2 respectively.")
         
-        # Get the target sag or gradient of sag data to fit
         z_data = self.sag1() if fit_type == "sag" else self.grad_sag1()
         Z_data = self.sag2() if fit_type == "sag" else self.grad_sag2()
+        
+        s1_bounds = bounds['surface1']
+        s2_bounds = bounds['surface2']
+        
+        vr1_min = s1_bounds['vertex_r_min']
+        vr1_max = s1_bounds['vertex_r_max']
+        k1_min = s1_bounds['k_min']
+        k1_max = s1_bounds['k_max']
+        
+        vr2_min = s2_bounds['vertex_r_min']
+        vr2_max = s2_bounds['vertex_r_max']
+        k2_min = s2_bounds['k_min']
+        k2_max = s2_bounds['k_max']
         
         # Get initial parameter list
         coeffs_list1 = [ea1.coefficients.get(i, 0.0) for i in sorted(ea1.coefficients.keys())]
@@ -408,20 +420,6 @@ class BeamShaperFitter:
         num_coeffs1 = len(coeffs_list1)
         num_coeffs2 = len(coeffs_list2)
         
-        # Set bounds for optimization
-        s1_bounds = bounds['surface1']
-        s2_bounds = bounds['surface2']
-        
-        vr1_min = s1_bounds['vertex_r_min']
-        vr1_max = s1_bounds['vertex_r_max']
-        k1_min = s1_bounds['k_min']
-        k1_max = s1_bounds['k_max']
-        
-        vr2_min = s2_bounds['vertex_r_min']
-        vr2_max = s2_bounds['vertex_r_max']
-        k2_min = s2_bounds['k_min']
-        k2_max = s2_bounds['k_max']
-        
         lb_s1 = [vr1_min, k1_min] + [-np.inf]*num_coeffs1
         ub_s1 = [vr1_max, k1_max] + [np.inf]*num_coeffs1
         lb_s2 = [vr2_min, k2_min] + [-np.inf]*num_coeffs2
@@ -432,7 +430,6 @@ class BeamShaperFitter:
         
         bounds_tuple = (lb, ub)
         
-        # Define the residuals function for least squares optimization
         def residuals(params):
             '''
             Computes the residuals between the data and the fitted aspheric surface for later optimization.
@@ -464,7 +461,6 @@ class BeamShaperFitter:
         # Perform least squares optimization, trf for Trust Region Reflective algorithm
         result = least_squares(residuals, p0, bounds = bounds_tuple, method='trf', ftol=1e-10, xtol=1e-10, gtol=1e-10, verbose=2 if verbose else 0)
         
-        # Extract fitted parameters
         x=result.x
         p1 = x[:l1]
         p2 = x[l1:l1+l2]
@@ -477,7 +473,6 @@ class BeamShaperFitter:
                 
         rms = np.sqrt(np.mean(residuals(result.x)**2))
         
-        # Plot comparison if needed
         if compare:
             ea1_fitted = EvenAsphere(
                 r_max = self.r_max, 
