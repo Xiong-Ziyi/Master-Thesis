@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2026.1.14)  15 JAN 2026 15:27
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2026.1.14)  15 JAN 2026 16:00
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -560,7 +560,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 )
 \@quotelevel=\count443
 \@quotereset=\count444
-Package translations Info: No language package found. I am going to use `english' as default language. on input line 23.
+Package translations Info: No language package found. I am going to use `english' as default language. on input line 26.
  (d:/texlive/2025/texmf-dist/tex/latex/graphics/color.sty
 Package: color 2024/06/23 v1.3e Standard LaTeX Color (DPC)
  (d:/texlive/2025/texmf-dist/tex/latex/graphics-cfg/color.cfg
@@ -570,26 +570,26 @@ Package color Info: Driver file: xetex.def on input line 149.
  (d:/texlive/2025/texmf-dist/tex/latex/graphics/mathcolor.ltx)) (./Report.aux)
 \openout1 = `Report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -625,7 +625,7 @@ LaTeX Font Info:    ... okay on input line 23.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring ON on input line 23.
+Package hyperref Info: Link coloring ON on input line 26.
 (./Report.out) (./Report.out)
 \@outlinefile=\write4
 \openout4 = `Report.out'.
@@ -645,17 +645,17 @@ Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'Report.bbl' not found.
 
 No file Report.bbl.
-Package biblatex Info: Reference section=0 on input line 23.
-Package biblatex Info: Reference segment=0 on input line 23.
+Package biblatex Info: Reference section=0 on input line 26.
+Package biblatex Info: Reference segment=0 on input line 26.
 (d:/texlive/2025/texmf-dist/tex/latex/translations/translations-basic-dictionary-english.trsl
 File: translations-basic-dictionary-english.trsl (english translation file `translations-basic-dictionary')
 )
-Package translations Info: loading dictionary `translations-basic-dictionary' for `english'. on input line 23.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 26.
+Package translations Info: loading dictionary `translations-basic-dictionary' for `english'. on input line 26.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 29.
  (d:/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 26.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 29.
  (d:/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (./Report.toc)
@@ -701,18 +701,18 @@ LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `Report.out' has not changed.
-(rerunfilecheck)             Checksum: 8BBD03CCC283006601DA00B9C3F9EEC7;1172.
+(rerunfilecheck)             Checksum: FB94EB095D647EACA2B8F435577ADCFA;1302.
 Package logreq Info: Writing requests to 'Report.run.xml'.
 \openout1 = `Report.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 21483 strings out of 473832
- 425527 string characters out of 5733158
- 1218403 words of memory out of 5000000
- 44328 multiletter control sequences out of 15000+600000
+ 21484 strings out of 473832
+ 425538 string characters out of 5733158
+ 1218548 words of memory out of 5000000
+ 44329 multiletter control sequences out of 15000+600000
  590806 words of font info for 72 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 72i,6n,81p,691b,918s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,6n,81p,691b,935s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on Report.pdf (5 pages).

@@ -1,0 +1,111 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>MZDDE - The ZEMAX DDE Toolbox for Matlab</title>
+</head>
+
+<body>
+
+<p align="center"><img border="0" src="MZDDE%20Logo.jpg" width="256" height="238"><a href="http://www.csir.co.za"><img border="0" src="CSIR%20Defencetek%20Logo.gif" width="310" height="100" align="top"></a></p>
+<h1 align="center"><font face="Bell MT">MZDDE - The ZEMAX DDE Toolbox for Matlab</font></h1>
+<h2><font face="Bell MT">Introduction</font></h2>
+<p>DDE stands for Dynamic Data Exchange and it is a facility provided by the
+Windows™ Operating System for two programs to exchange data. <a href="http://www.zemax.com"> ZEMAX</a> has a
+built-in DDE server that can respond to requests for various operations from
+Matlab through a suite of function calls. ZEMAX then passes the results back to
+Matlab. The functions implemented are documented in the ZEMAX manual in the
+chapter on ZEMAX Extensions.</p>
+<h2>Testing</h2>
+<p>The toolbox was built using Matlab 6 Release 13. Many of the functions have
+been tested with that release of Matlab and the 1 November 2004 update of ZEMAX.
+Since the toolbox is dependent on both ZEMAX and Matlab, updates to either could
+cause problems. Regression testing for the toolbox is in the process of being
+implemented. This is a way to verify correct operation of the bulk of the MZDDE
+function calls when either ZEMAX or Matlab is updated</p>
+<h2>Usage</h2>
+<p>Firstly it will be necessary to add the MZDDE directory, wherever you have
+unpacked the archive, to your Matlab path.&nbsp;</p>
+<p>In general, each of the &quot;data items&quot; listed in the ZEMAX Extensions
+chapter of the ZEMAX manual is implemented as a Matlab function named with a
+&quot;z&quot; preceding the ZEMAX name of the data item e.g. the MZDDE function <a href="MZDDE%20Function%20Reference.html#zGetSerial">zGetSerial</a>
+implements the ZEMAX GetSerial data item.</p>
+<p>Before calling any other function that accesses the ZEMAX DDE server in
+Matlab, it is necessary to initialise the link to the ZEMAX DDE server using the
+<a href="MZDDE%20Function%20Reference.html#zDDEInit">zDDEInit</a> function call.
+If you do not initialise the link, upon calling any of the other functions in
+the toolbox, you will get a verbose error message from Matlab providing no clue
+as to what you have done wrong.</p>
+<p>It is very important to appreciate that ZEMAX maintains two copies of the
+lens data, one in the DDE server, and the other in the user interface (visible
+to the user in the ZEMAX Lens Data Editors). There are two functions for copying
+the one set of data to the other area. <a href="MZDDE%20Function%20Reference.html#zGetRefresh">zGetRefresh</a>
+will copy the lens data in the ZEMAX user interface to the DDE server. <a href="MZDDE%20Function%20Reference.html#zPushLens">zPushLens</a>
+will transfer the lens data in the DDE server to the ZEMAX user interface. The
+first time you use zPushLens, older versions of ZEMAX will pop up a modal window asking the user
+for permission
+to replace the current lens data in the user interface with the lens data from
+the DDE server. This window appears as follows.</p>
+<p align="center"><img border="0" src="ZEMAX%20DDE%20Client%20Request%20Modal%20Window.bmp" width="769" height="122"></p>
+<p align="left">If you click Yes, the data will be accepted from the DDE server,
+as well as all future zPushLens requests. This window will generally appear only
+once per ZEMAX session. Since the DDE request from Matlab could timeout waiting
+for the user to give permission for the zPushLens operation, the zPushLens
+function requires a specific timeout parameter in seconds.&nbsp;</p>
+<p align="left">More recent versions of ZEMAX will reject attempts to push a
+lens into the LDE (zPushLens will return -999) unless permission is granted by
+means of a check box on the Editors tab of the ZEMAX preferences dialog,
+typically as shown below.</p>
+<p align="center"><img border="0" src="ZEMAX%20Editors%20Preferences%20Dialog.bmp" width="476" height="375"></p>
+<h2>Function Reference</h2>
+<p>Each of the functions in the toolbox is documented in terms of inputs and
+output in the <a href="MZDDE%20Function%20Reference.html">MZDDE Function
+Reference</a>.&nbsp;</p>
+<h2>Compilation</h2>
+<p>In many cases it is possible to compile your Matlab application built on top
+of MZDDE to a standalone ZEMAX extension that can be run from the Extensions
+menu. It is important to ensure that all of the functions you use in your
+application can be compiled by the Matlab compiler. Obviously, you will also
+need the Matlab compiler to accomplish this. If you wish to distribute your
+standalone extension, you will need to distribute the Matlab runtime libraries
+along with it for non-Matlab users.</p>
+<h2>Bugs, Updates and Contributions</h2>
+<p>Should you find any bugs in this toolbox, please report them as soon as
+possible to <a href="mailto:dgriffith@csir.co.za">Derek Griffith</a> at CSIR.
+Please also send any applications built on the toolbox that you would like to
+contribute.</p>
+<h2>Copyright © 2002-2004, Defencetek, <a href="http://www.csir.co.za">CSIR</a></h2>
+<p>&nbsp;&nbsp;&nbsp; This file is part of MZDDE - The ZEMAX DDE Toolbox for
+Matlab.
+</p>
+<p>&nbsp;&nbsp;&nbsp; This Matlab toolbox is free software; you can redistribute it
+and/or modify<br>
+&nbsp;&nbsp;&nbsp; it under the terms of the GNU General Public License as
+published by<br>
+&nbsp;&nbsp;&nbsp; the <a href="http://www.fsf.org">Free Software Foundation</a>;
+either version 2 of the License, or<br>
+&nbsp;&nbsp;&nbsp; (at your option) any later version.<br>
+<br>
+&nbsp;&nbsp;&nbsp; This Matlab toolbox is distributed in the hope that it will
+be useful,<br>
+&nbsp;&nbsp;&nbsp; but WITHOUT ANY WARRANTY; without even the implied warranty
+of<br>
+&nbsp;&nbsp;&nbsp; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.&nbsp;
+See the<br>
+&nbsp;&nbsp;&nbsp; GNU General Public License (in the file <a href="../COPYING.html">COPYING</a>)
+for more details.<br>
+<br>
+&nbsp;&nbsp;&nbsp; You should have received a copy of the GNU General Public
+License<br>
+&nbsp;&nbsp;&nbsp; along with this program; if not, write to the Free Software
+Foundation, Inc., <br>
+&nbsp;&nbsp;&nbsp; 59 Temple Place, Suite 330, Boston, MA&nbsp; 02111-1307&nbsp;
+USA.<br>
+</p>
+
+</body>
+
+</html>

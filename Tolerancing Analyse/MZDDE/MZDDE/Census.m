@@ -1,0 +1,91 @@
+% Census Script
+% This script and report tabulates the status of all the m-files in the MZDDE directory.
+% Usage : census
+% 
+% See Also : docgen
+
+% MZDDE - The ZEMAX DDE Toolbox for Matlab.
+% Copyright (C) 2002-2004 Defencetek, CSIR
+% Contact : dgriffith@csir.co.za
+% 
+% This file is part of MZDDE.
+% 
+%  MZDDE is free software; you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation; either version 2 of the License, or
+%  (at your option) any later version.
+%
+%  MZDDE is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License
+%  along with MZDDE (COPYING.html); if not, write to the Free Software
+%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+%
+
+% $Header: C:\\Projects\\RCS\\C\\Projects\\MZDDE\\Census.m,v 1.1 2005-04-22 09:35:37+02 dgriffith Exp dgriffith $
+% $Revision: 1.1 $
+
+% Get a directory of all the .m files in this directory
+% Of course, there may be other files in the directory under revision control and these should be
+% included in future versions of this script.
+
+myself = which('Census'); % Get the directory from which this census is running (presumably)
+[mypath,name,ext,versn] = fileparts(myself); % Get the path
+
+% Now get all the .m files
+
+mfiles = dir([mypath '\*.m']);
+
+% Set up the cell array headings
+VersionSummary{1,1} = 'Filename';
+VersionSummary{1,2} = 'Major Revision';
+VersionSummary{1,3} = 'Minor Revision';
+VersionSummary{1,4} = 'GPL';
+majsum = 0;
+minsum = 0;
+
+% Set up GPL Column
+for i = 1:length(mfiles)
+    VersionSummary{i+1,4} = 'No';
+end
+
+% Loop through all .m files and and get the versions
+
+for i = 1:length(mfiles)
+    mfid = fopen([mypath '\' mfiles(i).name]);
+    VersionSummary{i+1,1} = mfiles(i).name;
+    % Read lines in the .m file until the version information is found
+    while 1
+      mline = fgetl(mfid);
+      if ~ischar(mline), break, end
+      % Check the line to see if there is a $Revision line
+      head = strfind(mline, '$Revision: ');
+      if ~isempty(head)
+          mline = mline(head(1):end);
+          mrev = [];
+          [mrev, count] = sscanf(mline, '$Revision: %i.%i');
+          if count == 2
+            VersionSummary{i+1,2} = mrev(1); majsum = majsum + mrev(1);
+            VersionSummary{i+1,3} = mrev(2); minsum = minsum + mrev(2);
+          end
+          break;
+      end
+      % Check the line to see if the GNU licence is found
+      gnu = strfind(mline, 'GNU General Public License');
+      if ~isempty(gnu)
+          VersionSummary{i+1,4} = 'Yes';
+      end
+    end
+    fclose(mfid);
+end
+
+VersionSummary{length(mfiles)+2,1} = 'Version number sum =';
+VersionSummary{length(mfiles)+2,2} = majsum;
+VersionSummary{length(mfiles)+2,3} = minsum;
+
+% Run the report
+report census
+
