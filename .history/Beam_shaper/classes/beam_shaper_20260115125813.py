@@ -21,7 +21,7 @@ class BeamShaper:
         r_max (float): The maximum input radial coordinate.
         d (float): The thickness of the first lens' second surface.
         n (float): The refractive index of the two lens.
-        type (str): Either "Keplerian" or "Galilean", indicating the type of beam shaper.
+        type (str): Either "Keplerian" or "Galilean", indicatinig the type of beam shaper.
         approx (bool): indicates if the Longitudinal Aberration is approximated by parabolic
             function and Taylor expansion.
     """

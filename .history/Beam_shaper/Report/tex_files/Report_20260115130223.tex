@@ -1,0 +1,79 @@
+\documentclass[a4paper]{article}
+\usepackage[margin = 2.5cm]{geometry}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{graphicx}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage[breaklinks=true,colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{placeins}
+\usepackage[natbib,abbreviate=true,doi=false,style=numeric-comp,giveninits=true,sorting=none]{biblatex}
+\usepackage[space-before-unit=true,per-mode = symbol]{siunitx}
+\usepackage{float}
+
+\title{Beam Shaper}
+\author{Ziyi Xiong}
+\date{\today}
+
+\addbibresource{MyBibliography.bib}
+\graphicspath{{../Figures/}}
+
+\DeclareSIUnit{\dBm}{dBm}
+\DeclareSIUnit[per-mode=reciprocal]\WN{\per\centi\meter}
+
+\begin{document}
+\maketitle
+
+\section{Keplerian Type Beam Shaper}
+Simulation with parameters given in \textit{Laser Beam Shaping Techniques}
+
+\subsection{Initial system}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Keplerian_init.png}
+    \caption{Initial Keplerian type beam shaper system.}
+\end{figure}
+
+This system gives a profile as below in Zemax OpticStudio:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Keplerian_init_profile.png}
+    \caption{Initial beam profile at the output plane.}
+\end{figure}
+
+\subsection{Optimized with only conic constant}
+
+The parameters given in \textit{Laser Beam Shaping Techniques}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Keplerian_opted_k.png}
+    \caption{Optimized Keplerian type beam shaper system with only conic constant as variable.}
+\end{figure}
+
+In Zemax OpticStudio, the output profile given by this is:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Keplerian_opted_k_profile.png}
+    \caption{Output beam profile at the output plane after optimization with only conic constant as variable.}
+\end{figure}
+
+\subsection{Optimized with up to 4th order}
+
+The parameters given in \textit{Laser Beam Shaping Techniques}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Keplerian_opted_to_4th.png}
+    \caption{Optimized Keplerian type beam shaper system with up to 4th order as variable.}
+\end{figure}
+
+In Zemax OpticStudio, the output profile given by this is:
+
+
+
+\section{Galilean Type Beam Shaper}
+
+\end{document}

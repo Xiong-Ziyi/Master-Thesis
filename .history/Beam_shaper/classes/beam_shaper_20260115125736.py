@@ -21,7 +21,7 @@ class BeamShaper:
         r_max (float): The maximum input radial coordinate.
         d (float): The thickness of the first lens' second surface.
         n (float): The refractive index of the two lens.
-        type (str): Either "Keplerian" or "Galilean", indicating the type of beam shaper.
+        type (str): Either "Keplerian" or "Galilean", indicatinig the type of beam shaper.
         approx (bool): indicates if the Longitudinal Aberration is approximated by parabolic
             function and Taylor expansion.
     """
@@ -90,7 +90,7 @@ class BeamShaper:
     @property
     def k_1(self) -> float:
         """
-        Returns the conic constant of the first aspheric surface.
+        Returns the conic constant of the first aspherical surface.
         """
         coeff = -2 * self.Delta_s_prime * self.s_prime_zero * (self.n - 1) ** 2
         return coeff / (self.omega_0**2) - self.n**2 
@@ -98,14 +98,14 @@ class BeamShaper:
     @property
     def r_c1(self) -> float:
         """
-        Returns the vertex radius of the first aspheric surface.
+        Returns the vertex radius of the first aspherical surface.
         """
         return -self.s_prime_zero * (self.n - 1)
 
     @property
     def k_2(self) -> float:
         """
-        Returns the conic constant of the second aspheric surface.
+        Returns the conic constant of the second aspherical surface.
         """
         coeff = self.s_prime_zero * self.k_1 + self.n**2 * self.d
         return coeff / (self.s_prime_zero - self.d)
@@ -113,7 +113,7 @@ class BeamShaper:
     @property
     def r_c2(self) -> float:
         """
-        Returns the vertex radius of the second aspheric surface.
+        Returns the vertex radius of the second aspherical surface.
         """
         return (self.n - 1) * (self.d - self.s_prime_zero)
 
