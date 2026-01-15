@@ -21,34 +21,16 @@
 \DeclareSIUnit[per-mode=reciprocal]\WN{\per\centi\meter}
 
 \begin{document}
-
 \maketitle
-\tableofcontents
-
-\newpage
+\makecontents
 \section{Keplerian Type Beam Shaper}
-
-Simulation with parameters and lens data sheet given in \textit{Laser Beam Shaping Techniques}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\textwidth]{121K_Parameters.png}
-    \caption{Parameters of Keplerian type beam shaper system.}
-\end{figure}
-
-The parameters gives the apodization factor as: 
-
-\begin{equation}
-    G = \left(\frac{r_max}{\omega_0}\right)
-\end{equation}
+Simulation with parameters given in \textit{Laser Beam Shaping Techniques}
 
 \subsection{Initial system}
 
-The lens data sheet given in \textit{Laser Beam Shaping Techniques}:
-
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{Keplerian_init.png}
+    \includegraphics[width=0.75\textwidth]{Keplerian_init.png}
     \caption{Initial Keplerian type beam shaper system.}
 \end{figure}
 
@@ -56,17 +38,17 @@ This system gives a profile as below in Zemax OpticStudio:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{Keplerian_init_profile.png}
+    \includegraphics[width=0.75\textwidth]{Keplerian_init_profile.png}
     \caption{Initial beam profile at the output plane.}
 \end{figure}
 
 \subsection{Optimized with only conic constant}
 
-The lens data sheet given in \textit{Laser Beam Shaping Techniques}:
+The parameters given in \textit{Laser Beam Shaping Techniques}:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{Keplerian_opted_k.png}
+    \includegraphics[width=0.75\textwidth]{Keplerian_opted_k.png}
     \caption{Optimized Keplerian type beam shaper system with only conic constant as variable.}
 \end{figure}
 
@@ -74,17 +56,17 @@ In Zemax OpticStudio, the output profile given by this is:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{Keplerian_opted_k_profile.png}
+    \includegraphics[width=0.75\textwidth]{Keplerian_opted_k_profile.png}
     \caption{Output beam profile at the output plane after optimization with only conic constant as variable.}
 \end{figure}
 
 \subsection{Optimized with up to 4th order}
 
-The lens data sheet given in \textit{Laser Beam Shaping Techniques}:
+The parameters given in \textit{Laser Beam Shaping Techniques}:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{Keplerian_opted_to_4th.png}
+    \includegraphics[width=0.75\textwidth]{Keplerian_opted_to_4th.png}
     \caption{Optimized Keplerian type beam shaper system with up to 4th order as variable.}
 \end{figure}
 
@@ -92,28 +74,10 @@ In Zemax OpticStudio, the output profile given by this is:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{Keplerian_opted_to_4th_profile.png}
+    \includegraphics[width=0.75\textwidth]{Keplerian_opted_to_4th_profile.png}
     \caption{Output beam profile at the output plane after optimization with up to 4th order as variable.}
 \end{figure}
 
-\subsection{Optimized with up to 6th order}
-
-The lens data sheet given in \textit{Laser Beam Shaping Techniques}:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{Keplerian_opted_to_6th.png}
-    \caption{Optimized Keplerian type beam shaper system with up to 6th order as variable.}
-\end{figure}
-
-In Zemax OpticStudio, the output profile given by this is:
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{Keplerian_opted_to_6th_profile.png}
-    \caption{Output beam profile at the output plane after optimization with up to 6th order as variable.}      
-\end{figure}
-
-\newpage
 \section{Galilean Type Beam Shaper}
 
 \end{document}
