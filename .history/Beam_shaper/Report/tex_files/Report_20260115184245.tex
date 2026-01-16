@@ -33,20 +33,16 @@
 
 Simulation with parameters and lens data sheet given in \textit{Laser Beam Shaping Techniques}
 
-\begin{equation}
-    \omega_0 = 2.366 \quad R_{max} = 4.05 \quad r_{max} = 4.05 \quad n = 1.46071 \quad d = 150
-\end{equation}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{121K_Parameters.png}
+    \caption{Parameters of Keplerian type beam shaper system.}
+\end{figure}
 
 The parameters gives the apodization factor as: 
 
 \begin{equation}
     G = \left(\frac{r_{max}}{\omega_0}\right)^2 \approx 2.93 
-\end{equation}
-
-The key settings of all the Geometric Image Analysis in Zemax OpticStudio are as below:
-
-\begin{equation}
-    \text{Image Size} = 10 \quad \text{Rays x 1000} = 500000 \quad \text{\# Pixels} = 200 \quad \text{Total Watts} = 1
 \end{equation}
 
 \subsection{Initial system}
@@ -73,7 +69,7 @@ The lens data sheet given in \textit{Laser Beam Shaping Techniques}:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{Keplerian_opted_k.png}
+    \includegraphics[width=0.75\textwidth]{Keplerian_opted_k.png}
     \caption{Optimized Keplerian type beam shaper system with only conic constant as variable.}
 \end{figure}
 
@@ -85,13 +81,13 @@ In Zemax OpticStudio, the output profile given by this is:
     \caption{Output beam profile at the output plane after optimization with only conic constant as variable.}
 \end{figure}
 
-\subsection{Optimized with up to 4th order of the second aspheric}
+\subsection{Optimized with up to 4th order in the second aspheric}
 
 The lens data sheet given in \textit{Laser Beam Shaping Techniques}:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{Keplerian_opted_to_4th.png}
+    \includegraphics[width=0.75\textwidth]{Keplerian_opted_to_4th.png}
     \caption{Optimized Keplerian type beam shaper system with up to 4th order as variable.}
 \end{figure}
 
@@ -103,7 +99,7 @@ In Zemax OpticStudio, the output profile given by this is:
     \caption{Output beam profile at the output plane after optimization with up to 4th order as variable.}
 \end{figure}
 
-\subsection{Optimized with up to 6th order of the second aspheric}
+\subsection{Optimized with up to 6th order in the second aspheric}
 
 The lens data sheet given in \textit{Laser Beam Shaping Techniques}:
 
@@ -131,11 +127,6 @@ So the parameters are modified as below:
     \omega_0 = 2.366 \quad R_{max} = 12.15 \quad r_{max} = 4.05 \quad n = 1.46071 \quad d = 150
 \end{equation}
 
-The key settings of all the Geometric Image Analysis in Zemax OpticStudio are as below:
-
-\begin{equation}
-    \text{Image Size} = 32 \quad \text{Rays x 1000} = 500000 \quad \text{\# Pixels} = 200 \quad \text{Total Watts} = 1
-\end{equation}
 \subsection{Initial system}
 
 Given the parameters above, the initial system's lens data can be derived using equations provided in \textit{Laser Beam Shaping Techniques} (for the calculations, please refer to the \texttt{beam\_shaper.py} file):
@@ -154,7 +145,7 @@ The output beam profile is:
     \caption{Output beam profile at the output plane for the initial Galilean type beam shaper system.}
 \end{figure}
 
-\subsection{Optimized with only conic constants}
+\subsection{Optimized with only conic constant}
 
 According to the ray mapping function for Galilean type given in \textit{Laser Beam Shaping Techniques}:
 
@@ -180,9 +171,7 @@ Which gives a slightly better output beam profile:
     \caption{Output beam profile at the output plane after optimization with only conic constant as variable.}
 \end{figure}
 
-\subsection{Optimization focusing on the second aspheric}
-
-\subsubsection{Optimized with up to 4th order of the second aspheric}
+\subsection{Optimized with up to 4th order}
 
 After optimization with up to 4th order as variable, the lens data is:
 
@@ -192,7 +181,7 @@ After optimization with up to 4th order as variable, the lens data is:
     \caption{Optimized Galilean type beam shaper system with up to 4th order as variable.}
 \end{figure}
 
-Which gives an output beam profile with wider flat top region:
+Which gives an almost the same output beam profile:
 
 \begin{figure}[H]
     \centering
@@ -200,62 +189,8 @@ Which gives an output beam profile with wider flat top region:
     \caption{Output beam profile at the output plane after optimization with up to 4th order as variable.}
 \end{figure}
 
-\subsubsection{Optimized with up to 6th order of the second aspheric}
+\subsection{Optimized with up to 6th order}
 
-After optimization with up to 6th order as variable, the lens data is:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{Galilean_opted_to_6th.png}
-    \caption{Optimized Galilean type beam shaper system with up to 6th order as variable.}  
-\end{figure}
-
-Which gives an output beam profile with even wider flat top region:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{Galilean_opted_to_6th_profile.png}
-    \caption{Output beam profile at the output plane after optimization with up to 6th order as variable.}
-\end{figure}
-
-\subsection{Optimization focusing on the first aspheric}
-
-Optimization focusing on the second aspheric behaves not well enough, so the first aspheric is optimized instead.
-
-\subsubsection{Optimized with up to 4th order of the first aspheric}
-
-After optimization with up to 4th order as variable, the lens data is:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{Galilean_opted_to_4th_s1.png}
-    \caption{Optimized Galilean type beam shaper system with up to 4th order of the first aspheric as variable.}
-\end{figure}
-
-Which gives an output beam profile with a much wider and flatter flat top region:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{Galilean_opted_to_4th_profile_s1.png}
-    \caption{Output beam profile at the output plane after optimization with up to 4th order of the first aspheric as variable.}
-\end{figure}
-
-\subsubsection{Optimized with up to 6th order of the first aspheric}
-After optimization with up to 6th order as variable, the lens data is:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{Galilean_opted_to_6th_s1.png}
-    \caption{Optimized Galilean type beam shaper system with up to 6th order of the first aspheric as variable.}
-\end{figure}
-
-Which gives an output beam profile with a slightly wider flat top region than the 4th order case and no obvious peaks:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{Galilean_opted_to_6th_profile_s1.png}
-    \caption{Output beam profile at the output plane after optimization with up to 6th order of the first aspheric as variable.}
-\end{figure}
 
 
 \end{document}

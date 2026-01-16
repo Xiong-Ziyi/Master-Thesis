@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2026.1.14)  15 JAN 2026 16:00
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2026.1.14)  16 JAN 2026 14:46
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -667,8 +667,6 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [1
 
 ]
-File: ../Figures/121K_Parameters.png Graphic file (type bmp)
-<../Figures/121K_Parameters.png>
 File: ../Figures/Keplerian_init.png Graphic file (type bmp)
 <../Figures/Keplerian_init.png>
 File: ../Figures/Keplerian_init_profile.png Graphic file (type bmp)
@@ -694,25 +692,65 @@ File: ../Figures/Keplerian_opted_to_6th_profile.png Graphic file (type bmp)
 
 
 [4]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 141.
+ (d:/texlive/2025/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+File: ../Figures/Galilean_init.png Graphic file (type bmp)
+<../Figures/Galilean_init.png>
+File: ../Figures/Galilean_init_profile.png Graphic file (type bmp)
+<../Figures/Galilean_init_profile.png>
 
-[5] (./Report.aux)
+
+[5]
+File: ../Figures/Galilean_opted_k.png Graphic file (type bmp)
+<../Figures/Galilean_opted_k.png>
+File: ../Figures/Galilean_opted_k_profile.png Graphic file (type bmp)
+<../Figures/Galilean_opted_k_profile.png>
+File: ../Figures/Galilean_opted_to_4th.png Graphic file (type bmp)
+<../Figures/Galilean_opted_to_4th.png>
+File: ../Figures/Galilean_opted_to_4th_profile.png Graphic file (type bmp)
+<../Figures/Galilean_opted_to_4th_profile.png>
+
+
+[6]
+File: ../Figures/Galilean_opted_to_6th.png Graphic file (type bmp)
+<../Figures/Galilean_opted_to_6th.png>
+File: ../Figures/Galilean_opted_to_6th_profile.png Graphic file (type bmp)
+<../Figures/Galilean_opted_to_6th_profile.png>
+File: ../Figures/Galilean_opted_to_4th_s1.png Graphic file (type bmp)
+<../Figures/Galilean_opted_to_4th_s1.png>
+
+
+[7]
+File: ../Figures/Galilean_opted_to_4th_profile_s1.png Graphic file (type bmp)
+<../Figures/Galilean_opted_to_4th_profile_s1.png>
+File: ../Figures/Galilean_opted_to_6th_s1.png Graphic file (type bmp)
+<../Figures/Galilean_opted_to_6th_s1.png>
+File: ../Figures/Galilean_opted_to_6th_profile_s1.png Graphic file (type bmp)
+<../Figures/Galilean_opted_to_6th_profile_s1.png>
+
+
+[8]
+
+[9] (./Report.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `Report.out' has not changed.
-(rerunfilecheck)             Checksum: FB94EB095D647EACA2B8F435577ADCFA;1302.
+(rerunfilecheck)             Checksum: 09B2F2B0A21340E0AE98D10AB59ED509;3815.
 Package logreq Info: Writing requests to 'Report.run.xml'.
 \openout1 = `Report.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 21484 strings out of 473832
- 425538 string characters out of 5733158
- 1218548 words of memory out of 5000000
- 44329 multiletter control sequences out of 15000+600000
- 590806 words of font info for 72 fonts, out of 8000000 for 9000
+ 21650 strings out of 473832
+ 431309 string characters out of 5733158
+ 1225126 words of memory out of 5000000
+ 44478 multiletter control sequences out of 15000+600000
+ 597098 words of font info for 75 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 72i,6n,81p,691b,935s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,6n,81p,691b,937s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Report.pdf (5 pages).
+Output written on Report.pdf (9 pages).
