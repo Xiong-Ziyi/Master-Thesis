@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
 from scipy.optimize import least_squares 
 from typing import Optional
+
 class BeamShaper:
     """
     This class is to model a initial Keplerian or Galilean beam shaper.
@@ -224,7 +225,8 @@ class BeamShaperFitter:
     '''
     def __init__(self, 
                  beam_shaper: BeamShaper, 
-                 num_samples: int = 100
+                 num_samples: int = 100,
+                sample_method: str = "linear"
                  ):
         self.beam_shaper = beam_shaper
         self.omega_0 = beam_shaper.omega_0
@@ -234,6 +236,18 @@ class BeamShaperFitter:
         self.n = beam_shaper.n
         self.r = np.linspace(0, beam_shaper.r_max, num_samples)
         self.R = np.linspace(0, beam_shaper.R_max, num_samples)
+        
+        u = np.linspace(0, 1, num_samples)
+        gaussian_factor = 4 * np.sqrt(-0.5 * np.log(1 - u * (1 - np.exp(-4))))
+        
+        if sample_method == "linear":
+            self.r = np.linspace(0, beam_shaper.r_max, num_samples)
+            self.R = np.linspace(0, beam_shaper.R_max, num_samples)
+        elif sample_method == "gaussian":
+            self.r = gaussian_factor * beam_shaper.r_max / gaussian_factor.max()
+            self.R = gaussian_factor * beam_shaper.R_max / gaussian_factor.max()
+        else:
+            raise ValueError("sample_method must be either 'linear' or 'gaussian'")
         
         if beam_shaper.type not in ["Keplerian", "Galilean"]:
             raise ValueError("type must be either 'Keplerian' or 'Galilean'")
