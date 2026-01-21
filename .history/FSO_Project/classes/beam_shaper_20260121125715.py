@@ -169,9 +169,7 @@ class BeamShaperFitter:
         n (float): The refractive index of the two lens.
         type (str): Either "Keplerian" or "Galilean", indicating the type of beam shaper.
         num_samples (int): Number of radial samples to compute.
-        
     '''
-    
     def __init__(self, 
                  beam_shaper: BeamShaper, 
                  num_samples: int = 100

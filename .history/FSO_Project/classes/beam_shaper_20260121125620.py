@@ -169,9 +169,7 @@ class BeamShaperFitter:
         n (float): The refractive index of the two lens.
         type (str): Either "Keplerian" or "Galilean", indicating the type of beam shaper.
         num_samples (int): Number of radial samples to compute.
-        
     '''
-    
     def __init__(self, 
                  beam_shaper: BeamShaper, 
                  num_samples: int = 100
@@ -333,10 +331,7 @@ class BeamShaperFitter:
             ea2 (EvenAsphere): Initial guess for the second surface even aspheric fitting.
             bounds (tuple): Bounds for the optimization parameters.
             verbose (bool): If True, prints detailed optimization information.
-            compare (bool): If True, plots comparison between original sags and fitted sags.
-            
-        Returns:
-            dict: A dictionary containing fitted parameters and optimization info.
+            compare (bool): If True, plots comparison between data and fitted surfaces.
         '''
         
         if ea1 is None or ea2 is None:

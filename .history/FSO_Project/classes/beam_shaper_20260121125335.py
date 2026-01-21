@@ -169,9 +169,7 @@ class BeamShaperFitter:
         n (float): The refractive index of the two lens.
         type (str): Either "Keplerian" or "Galilean", indicating the type of beam shaper.
         num_samples (int): Number of radial samples to compute.
-        
     '''
-    
     def __init__(self, 
                  beam_shaper: BeamShaper, 
                  num_samples: int = 100
@@ -326,17 +324,16 @@ class BeamShaperFitter:
                ) -> dict:
         
         '''
-        Fits the sag or gradient of sag of both surfaces with even aspheric surface equation using least squares optimization.
+        Fits the sag or gradient of sag of the specified surface with an even aspheric surface equation using least squares optimization.
         
         Args:
-            ea1 (EvenAsphere): Initial guess for the first surface even aspheric fitting.
-            ea2 (EvenAsphere): Initial guess for the second surface even aspheric fitting.
+            vertex_r (float): Initial guess for vertex radius of curvature.
+            k (float): Initial guess for conic constant.
+            coeffs (dict): Initial guess for higher-order even aspheric coefficients.
+            fit_type (str): Either "sag" or "grad_sag", indicating which quantity to fit.
+            fit_surface (int): Either 1 or 2, indicating which surface to fit.
             bounds (tuple): Bounds for the optimization parameters.
             verbose (bool): If True, prints detailed optimization information.
-            compare (bool): If True, plots comparison between original sags and fitted sags.
-            
-        Returns:
-            dict: A dictionary containing fitted parameters and optimization info.
         '''
         
         if ea1 is None or ea2 is None:

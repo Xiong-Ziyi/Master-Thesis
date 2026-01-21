@@ -170,8 +170,9 @@ class BeamShaperFitter:
         type (str): Either "Keplerian" or "Galilean", indicating the type of beam shaper.
         num_samples (int): Number of radial samples to compute.
         
+    Returns:
+        dict: A dictionary containing fitted parameters and optimization info.
     '''
-    
     def __init__(self, 
                  beam_shaper: BeamShaper, 
                  num_samples: int = 100

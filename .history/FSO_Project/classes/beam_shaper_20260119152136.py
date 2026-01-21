@@ -4,8 +4,6 @@ from scipy.integrate import cumulative_trapezoid
 from scipy.optimize import least_squares 
 from typing import Optional
 
-from .surfaces import EvenAsphere
-
 class BeamShaper:
     """
     This class is to model a initial Keplerian or Galilean beam shaper.
@@ -148,6 +146,61 @@ class BeamShaper:
             "k_2": float(self.k_2),
         }
 
+
+class EvenAsphere:
+    '''
+    This class models an even aspheric surface defined by its conic constant and 
+    higher-order even aspheric coefficients.
+    
+    Args:
+        r_max (float): Maximum radial coordinate.
+        vertex_r (float): Vertex radius of curvature.
+        k (float): Conic constant.
+        coefficients (dict): Dictionary of higher-order even aspheric coefficients.
+        num_samples (int): Number of radial samples to compute.
+        
+    By Ziyi Xiong 2026/1
+    '''
+    def __init__(self,
+                 r_max: float, 
+                 vertex_r: float, 
+                 k: float, 
+                 coefficients: dict = {4: 0.0, 6: 0.0, 8: 0.0}, 
+                 num_samples: int = 100
+    ):
+        self.r_max = r_max
+        self.vertex_r = vertex_r
+        self.k = k
+        self.coefficients = coefficients
+        self.r = np.linspace(0, r_max, num_samples)
+            
+    def sag(self) -> np.ndarray:
+        '''
+        Returns the sag of the aspheric surface at different radial coordinates.
+        '''
+        denom = np.sqrt(1 - (1 + self.k) * (self.r / self.vertex_r)**2)
+        conic = (self.r**2) / (self.vertex_r * (1 + denom))
+        asph = np.zeros_like(self.r)
+        for key, Ai in self.coefficients.items():
+            asph += Ai * (self.r ** key)
+        
+        sag_r = conic + asph
+        return sag_r
+    
+    def grad_sag(self) -> np.ndarray:
+        '''
+        Returns the gradient of the sag of the aspheric surface at different radial coordinates.
+        '''
+        denom = np.sqrt(1 - (1 + self.k) * (self.r / self.vertex_r)**2)
+        grad_conic = self.r / (denom * self.vertex_r)
+        grad_asph = np.zeros_like(self.r)
+        for key, Ai in self.coefficients.items():
+            grad_asph += key * Ai * (self.r ** (key - 1))    
+        
+        grad_sag_r = grad_conic + grad_asph
+        return grad_sag_r
+
+
 class BeamShaperFitter:
     '''
     This class is to fit Galilean or Keplerian beam shapers' two surfaces' sags with even aspheric surface equation.
@@ -169,9 +222,7 @@ class BeamShaperFitter:
         n (float): The refractive index of the two lens.
         type (str): Either "Keplerian" or "Galilean", indicating the type of beam shaper.
         num_samples (int): Number of radial samples to compute.
-        
     '''
-    
     def __init__(self, 
                  beam_shaper: BeamShaper, 
                  num_samples: int = 100
@@ -326,27 +377,20 @@ class BeamShaperFitter:
                ) -> dict:
         
         '''
-        Fits the sag or gradient of sag of both surfaces with even aspheric surface equation using least squares optimization.
+        Fits the sag or gradient of sag of the specified surface with an even aspheric surface equation using least squares optimization.
         
         Args:
-            ea1 (EvenAsphere): Initial guess for the first surface even aspheric fitting.
-            ea2 (EvenAsphere): Initial guess for the second surface even aspheric fitting.
+            vertex_r (float): Initial guess for vertex radius of curvature.
+            k (float): Initial guess for conic constant.
+            coeffs (dict): Initial guess for higher-order even aspheric coefficients.
+            fit_type (str): Either "sag" or "grad_sag", indicating which quantity to fit.
+            fit_surface (int): Either 1 or 2, indicating which surface to fit.
             bounds (tuple): Bounds for the optimization parameters.
             verbose (bool): If True, prints detailed optimization information.
-            compare (bool): If True, plots comparison between original sags and fitted sags.
-            
-        Returns:
-            dict: A dictionary containing fitted parameters and optimization info.
         '''
         
         if ea1 is None or ea2 is None:
             raise ValueError("ea1 and ea2 must be provided as EvenAsphere instances for surface 1 and surface 2 respectively.")
-        
-        if ea1.r_max != self.r_max and ea2.r_max != self.R_max:
-            raise ValueError("ea1.r_max must be equal to beam shaper r_max and ea2.r_max must be equal to beam shaper R_max.")
-        
-        if ea1.num_samples != self.num_samples and ea2.num_samples != self.num_samples:
-            raise ValueError("ea1.num_samples and ea2.num_samples must be equal to beam shaper num_samples.")
         
         # Get the target sag or gradient of sag data to fit
         z_data = self.sag1() if fit_type == "sag" else self.grad_sag1()
@@ -396,9 +440,6 @@ class BeamShaperFitter:
             
             Args:
                 params: 1D vector
-                
-            Returns:
-                Residuals between the fitted aspheric surface sag/grad_sag and the beam shaper sag/grad_sag.
             '''
             
             params1 = params[:l1]
