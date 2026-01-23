@@ -79,9 +79,7 @@ class MaterialFile(BaseMaterial):
         data = self._read_file()
         self._parse_file(data)
 
-    def _calculate_n(self, 
-                     wavelength,
-                     **kwargs):
+    def _calculate_n(self, wavelength: float | be.ndarray, **kwargs):
         """Calculates the refractive index of the material at given wavelengths.
 
         The method first calculates the refractive index from the dispersion formula,

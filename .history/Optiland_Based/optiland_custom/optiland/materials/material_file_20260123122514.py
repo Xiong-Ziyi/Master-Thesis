@@ -80,7 +80,7 @@ class MaterialFile(BaseMaterial):
         self._parse_file(data)
 
     def _calculate_n(self, 
-                     wavelength,
+                     wavelength: float | be.ndarray, # Changes made by Ziyi Xiong
                      **kwargs):
         """Calculates the refractive index of the material at given wavelengths.
 

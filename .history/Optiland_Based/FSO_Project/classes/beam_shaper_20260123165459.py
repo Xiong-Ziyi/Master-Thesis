@@ -31,7 +31,7 @@ class BeamShaper:
 
     def __init__(
         self,
-        omega: float,
+        omega_0: float,
         R_max: float,
         r_max: float,
         d: float,
@@ -39,7 +39,7 @@ class BeamShaper:
         type: str = "Keplerian",
         approx: bool = True,
     ):
-        self.omega = omega
+        self.omega_0 = omega_0
         self.R_max = R_max
         self.r_max = r_max
         self.d = d
@@ -56,7 +56,7 @@ class BeamShaper:
         """
         Returns a intermediate coefficient B given by Equation 7.13.
         """
-        denom = np.sqrt(1 - np.exp(-2 * (self.r_max / self.omega) ** 2))
+        denom = np.sqrt(1 - np.exp(-2 * (self.r_max / self.omega_0) ** 2))
         if self.type == "Keplerian":
             return -self.R_max / denom
         else:
@@ -67,7 +67,7 @@ class BeamShaper:
         Returns the object distance after the first lens at different ray height,
         given by Equation 7.16.
         """
-        sqrt = np.sqrt(1 - np.exp(-2 * r**2 / self.omega**2))
+        sqrt = np.sqrt(1 - np.exp(-2 * r**2 / self.omega_0**2))
         s_prime = self.d / (1 - (self._B / r) * sqrt)
         return s_prime
 
@@ -78,7 +78,7 @@ class BeamShaper:
         given by Equation 7.17 and 7.18.
         """
         if self.approx:
-            return self.d / (1 - np.sqrt(2) * self._B / self.omega)
+            return self.d / (1 - np.sqrt(2) * self._B / self.omega_0)
         else:
             return self.s_prime(1e-15)
 
@@ -88,7 +88,7 @@ class BeamShaper:
         Returns the difference between real object distance and paraxial object distance,
         which is actually Longitudinal Aberration (LA), given by Equation 7.19, 7.20 and 7.21.
         """
-        return self.s_prime(self.omega) - self.s_prime_zero
+        return self.s_prime(self.omega_0) - self.s_prime_zero
 
     @property
     def k_1(self) -> float:
@@ -96,7 +96,7 @@ class BeamShaper:
         Returns the conic constant of the first aspheric surface.
         """
         coeff = -2 * self.Delta_s_prime * self.s_prime_zero * (self.n - 1) ** 2
-        return coeff / (self.omega**2) - self.n**2 
+        return coeff / (self.omega_0**2) - self.n**2 
 
     @property
     def r_c1(self) -> float:
@@ -142,9 +142,9 @@ class BeamShaper:
     @property
     def apodization_factor(self) -> float:
         """
-        Returns the Zemax apodization factor of the beam shaper.
+        Returns the apodization factor of the beam shaper.
         """
-        return (self.r_max / self.omega)**2
+        return (self.r_max / self.omega_0)**2
   
     @property
     def result(self) -> dict:
@@ -187,7 +187,7 @@ class BeamShaperFitter:
                  num_samples: int = 100
                  ):
         self.beam_shaper = beam_shaper
-        self.omega = beam_shaper.omega
+        self.omega_0 = beam_shaper.omega_0
         self.r_max = beam_shaper.r_max
         self.R_max = beam_shaper.R_max
         self.d = beam_shaper.d
@@ -232,8 +232,8 @@ class BeamShaperFitter:
         R = epsilon * R_max * sqrt((1 - exp(-2*(r/omega_0)^2)) / (1 - exp(-2*(r_max/omega_0)^2)))
         
         '''
-        e1 = np.exp(-2 * (self.r / self.omega) ** 2)
-        e2 = np.exp(-2 * (self.r_max / self.omega) ** 2)
+        e1 = np.exp(-2 * (self.r / self.omega_0) ** 2)
+        e2 = np.exp(-2 * (self.r_max / self.omega_0) ** 2)
         R_r = self.R_max * np.sqrt((1 - e1) / (1 - e2))
         
         if self.type == "Keplerian":
@@ -250,11 +250,11 @@ class BeamShaperFitter:
         
         The relationship is given by Equation 20 in "Laser Beam Shaping: Aspheric Optics" by Shealy and Hoffnagle.
         
-        r = epsilon * omega * sqrt(-0.5 * ln(1 - (R/R_max)^2 * (1 - exp(-2*(r_max/omega)^2))))
+        r = epsilon * omega_0 * sqrt(-0.5 * ln(1 - (R/R_max)^2 * (1 - exp(-2*(r_max/omega_0)^2))))
         '''
-        exp = np.exp(-2 * (self.r_max / self.omega) ** 2)
+        exp = np.exp(-2 * (self.r_max / self.omega_0) ** 2)
         sqrt = np.sqrt(-0.5 * np.log(1 - (self.R / self.R_max)**2 * (1 - exp)))
-        r_R = self.omega * sqrt
+        r_R = self.omega_0 * sqrt
         
         if self.type == "Keplerian":
             r_R = -r_R

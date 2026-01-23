@@ -21,13 +21,8 @@ class CartesianOvalCollimator:
         num_samples (int): Number of radial samples to compute.
     '''
     
-    def __init__(self, 
-                 z_0: float, 
-                 n: float, 
-                 r_max: float, 
-                 num_samples: int = 100):
-        
-        if np.any(n <= 1):
+    def __init__(self, z_0, n, r_max, num_samples=100):
+        if n <= 1:
             raise ValueError(f"Refractive index n must be greater than 1, got {n}")
         if z_0 <= 0:
             raise ValueError(f"Point source distance z_0 must be positive, got {z_0}")

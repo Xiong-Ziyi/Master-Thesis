@@ -13,7 +13,7 @@ class GaussianBeam:
         
     '''
     
-    def __init__(self, wavelength: float, omega_0: float, index: float = 1.0):
+    def __init__(self, wavelength, omega_0, index=1.0):
         self.wavelength = wavelength  # Wavelength of the beam in micrometers
         self.omega_0 = omega_0  # Waist radius at z=0 in micrometers
         self.index = index  # Refractive index of the medium
@@ -44,7 +44,7 @@ class GaussianBeam:
     def div_angle_z(self, z):
         """Calculate the divergence angle at distance z from the waist."""
         omega_z = self.beam_radius(z)
-        if z > self.rayleigh_range * 1e-3:
+        if z > self.rayleigh_range:
             return np.arctan(omega_z / z)
         else:
             raise ValueError("Non-paraxial divergence angle is only defined for z greater than the Rayleigh range.")

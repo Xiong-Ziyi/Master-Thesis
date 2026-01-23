@@ -23,7 +23,7 @@ class CartesianOvalCollimator:
     
     def __init__(self, 
                  z_0: float, 
-                 n: float, 
+                 n: float | np.ndarray, 
                  r_max: float, 
                  num_samples: int = 100):
         

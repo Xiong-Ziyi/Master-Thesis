@@ -142,7 +142,7 @@ class BeamShaper:
     @property
     def apodization_factor(self) -> float:
         """
-        Returns the Zemax apodization factor of the beam shaper.
+        Returns the apodization factor of the beam shaper.
         """
         return (self.r_max / self.omega)**2
   
