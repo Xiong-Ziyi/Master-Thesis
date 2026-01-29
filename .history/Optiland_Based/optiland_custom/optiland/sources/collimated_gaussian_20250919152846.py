@@ -5,8 +5,6 @@ This module implements a collimated Gaussian source that generates rays with a
 Gaussian spatial distribution but collimated direction (all rays parallel to the
 optical axis). This source uses quasi-random Sobol sequences for improved sampling
 quality and differentiable ray generation.
-
-by Manuel
 """
 
 from __future__ import annotations

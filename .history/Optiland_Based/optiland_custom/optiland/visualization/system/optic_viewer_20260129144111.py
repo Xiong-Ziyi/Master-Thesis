@@ -46,7 +46,7 @@ class OpticViewer(BaseViewer):
         self.system = OpticalSystem(optic, self.rays, projection="2d")
         # self.legend_artist_map = {} # removed by Ziyi Xiong  
 
-    # old def view added by Ziyi Xiong
+    # old def view
     def view(
         self,
         fields="all",

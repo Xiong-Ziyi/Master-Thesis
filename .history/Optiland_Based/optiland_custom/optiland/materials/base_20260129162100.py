@@ -94,7 +94,8 @@ class BaseMaterial(ABC):
         cache_key = self._create_cache_key(wavelength, **kwargs)
 
         if cache_key in self._n_cache:
-            return self._n_cache[cache_key]
+            cached = self._n_cache[cache_key]
+            return cached
 
         result = self._calculate_n(wavelength, **kwargs)
         self._n_cache[cache_key] = result

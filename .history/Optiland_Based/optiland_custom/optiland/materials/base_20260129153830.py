@@ -81,8 +81,6 @@ class BaseMaterial(ABC):
     def n(self, wavelength: float | be.ndarray, **kwargs) -> float | be.ndarray:
         """Calculates the refractive index at a given wavelength with caching.
 
-        modified by Ziyi Xiong 2026/1
-        
         Args:
             wavelength (float | be.ndarray): The wavelength(s) of light in microns.
                 Can be a float, numpy array, or torch tensor.
@@ -103,8 +101,6 @@ class BaseMaterial(ABC):
     def k(self, wavelength: float | be.ndarray, **kwargs) -> float | be.ndarray:
         """Calculates the extinction coefficient at a given wavelength with caching.
 
-        modified by Ziyi Xiong 2026/1
-        
         Args:
             wavelength (float | be.ndarray): The wavelength(s) of light in microns.
                 Can be a float, numpy array, or torch tensor.
@@ -122,7 +118,14 @@ class BaseMaterial(ABC):
         self._k_cache[cache_key] = result
         return result
 
-        
+    @staticmethod
+    def _align_to_wavelength(wavelength, value):
+        """Aligns the output value device to match the input wavelength device."""
+        if be.is_torch_tensor(wavelength) and be.is_torch_tensor(value):  # noqa: SIM102
+            if value.device != wavelength.device or value.dtype != wavelength.dtype:
+                value = value.to(device=wavelength.device, dtype=wavelength.dtype)
+        return value
+
     @abstractmethod
     def _calculate_n(
         self, wavelength: float | be.ndarray, **kwargs

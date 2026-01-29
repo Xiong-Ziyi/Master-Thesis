@@ -374,27 +374,7 @@ class Rays2D:
             artists[artist] = ray_bundle
         return artists'''
 
-    # old def _plot_single_line
-    def _plot_single_line(self, ax, x, y, z, color_idx, linewidth=1):
-        """Plots a single line on the given axes.
-
-        Args:
-            ax (matplotlib.axes.Axes): The axes on which to plot the line.
-            x (array-like): The x-coordinates of the line.
-            y (array-like): The y-coordinates of the line.
-            z (array-like): The z-coordinates of the line.
-            color_idx (int): The index for the color to use for the line.
-            linewidth (float): The width of the line. Default is 1.
-
-        Returns:
-            None
-
-        """
-        color = f"C{color_idx}"
-        ax.plot(z, y, color, linewidth=linewidth)
-    
-    # new def _plot_single_line
-    '''def _plot_single_line(
+    def _plot_single_line(
         self, ax, x, y, z, color_idx, field, linewidth=1, theme=None, projection="YZ"
     ):
         """Plots a single line on the given axes.
@@ -427,7 +407,7 @@ class Rays2D:
             (line,) = ax.plot(z, x, color=color, linewidth=linewidth)
         else:  # YZ
             (line,) = ax.plot(z, y, color=color, linewidth=linewidth)
-        return line, RayBundle(x, y, z, field)'''
+        return line, RayBundle(x, y, z, field)
 
 
 class Rays3D(Rays2D):

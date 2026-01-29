@@ -81,8 +81,6 @@ class BaseMaterial(ABC):
     def n(self, wavelength: float | be.ndarray, **kwargs) -> float | be.ndarray:
         """Calculates the refractive index at a given wavelength with caching.
 
-        modified by Ziyi Xiong 2026/1
-        
         Args:
             wavelength (float | be.ndarray): The wavelength(s) of light in microns.
                 Can be a float, numpy array, or torch tensor.
@@ -94,17 +92,16 @@ class BaseMaterial(ABC):
         cache_key = self._create_cache_key(wavelength, **kwargs)
 
         if cache_key in self._n_cache:
-            return self._n_cache[cache_key]
+            return self._align_to_wavelength(wavelength, self._n_cache[cache_key])
 
         result = self._calculate_n(wavelength, **kwargs)
+        result = self._align_to_wavelength(wavelength, result)
         self._n_cache[cache_key] = result
         return result
 
     def k(self, wavelength: float | be.ndarray, **kwargs) -> float | be.ndarray:
         """Calculates the extinction coefficient at a given wavelength with caching.
 
-        modified by Ziyi Xiong 2026/1
-        
         Args:
             wavelength (float | be.ndarray): The wavelength(s) of light in microns.
                 Can be a float, numpy array, or torch tensor.
@@ -116,13 +113,21 @@ class BaseMaterial(ABC):
         cache_key = self._create_cache_key(wavelength, **kwargs)
 
         if cache_key in self._k_cache:
-            return self._k_cache[cache_key]
+            return self._align_to_wavelength(wavelength, self._k_cache[cache_key])
 
         result = self._calculate_k(wavelength, **kwargs)
+        result = self._align_to_wavelength(wavelength, result)
         self._k_cache[cache_key] = result
         return result
 
-        
+    @staticmethod
+    def _align_to_wavelength(wavelength, value):
+        """Aligns the output value device to match the input wavelength device."""
+        if be.is_torch_tensor(wavelength) and be.is_torch_tensor(value):  # noqa: SIM102
+            if value.device != wavelength.device or value.dtype != wavelength.dtype:
+                value = value.to(device=wavelength.device, dtype=wavelength.dtype)
+        return value
+
     @abstractmethod
     def _calculate_n(
         self, wavelength: float | be.ndarray, **kwargs

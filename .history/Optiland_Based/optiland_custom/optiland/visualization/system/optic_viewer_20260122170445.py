@@ -18,7 +18,7 @@ from optiland.visualization.base import BaseViewer
 from optiland.visualization.system.interaction import InteractionManager
 from optiland.visualization.system.rays import Rays2D
 from optiland.visualization.system.system import OpticalSystem
-# from optiland.visualization.themes import get_active_theme # removed by Ziyi Xiong
+from optiland.visualization.themes import get_active_theme
 
 
 class OpticViewer(BaseViewer):
@@ -44,75 +44,9 @@ class OpticViewer(BaseViewer):
 
         self.rays = Rays2D(optic)
         self.system = OpticalSystem(optic, self.rays, projection="2d")
-        # self.legend_artist_map = {} # removed by Ziyi Xiong  
+        self.legend_artist_map = {}
 
-    # old def view added by Ziyi Xiong
     def view(
-        self,
-        fields="all",
-        wavelengths="primary",
-        num_rays=3,
-        distribution="line_y",
-        figsize=(10, 4),
-        xlim=None,
-        ylim=None,
-        title=None,
-        reference=None,
-    ):
-        """Visualizes the optical system.
-
-        Args:
-            fields (str, optional): The fields to be visualized.
-                Defaults to 'all'.
-            wavelengths (str, optional): The wavelengths to be visualized.
-                Defaults to 'primary'.
-            num_rays (int, optional): The number of rays to be visualized.
-                Defaults to 3.
-            distribution (str, optional): The distribution of rays.
-                Defaults to 'line_y'.
-            figsize (tuple, optional): The size of the figure.
-                Defaults to (10, 4).
-            xlim (tuple, optional): The x-axis limits. Defaults to None.
-            ylim (tuple, optional): The y-axis limits. Defaults to None.
-            reference (str, optional): The reference rays to plot. Options
-                include "chief" and "marginal". Defaults to None.
-
-        """
-        fig, ax = plt.subplots(figsize=figsize)
-
-        self.rays.plot(
-            ax,
-            fields=fields,
-            wavelengths=wavelengths,
-            num_rays=num_rays,
-            distribution=distribution,
-            reference=reference,
-        )
-
-        self.system.plot(ax)
-
-        ax.set_facecolor("#f8f9fa")  # off-white background
-        ax.axis("image")
-        ax.set_xlabel("Z [mm]")
-        ax.set_ylabel("Y [mm]")
-
-        if title:
-            ax.set_title(title)
-        elif hasattr(self.optic, "source") and self.optic.source is not None:
-            # Auto-generate title for extended source
-            ax.set_title(f"Optical System with {type(self.optic.source).__name__}")
-        if xlim:
-            ax.set_xlim(xlim)
-        if ylim:
-            ax.set_ylim(ylim)
-
-        ax.grid(alpha=0.25)
-
-        # Return the figure and axes instead of showing the plot
-        return fig, ax
-    
-    # new def view
-    '''def view(
         self,
         fields="all",
         wavelengths="primary",
@@ -225,4 +159,4 @@ class OpticViewer(BaseViewer):
         )
 
         # Return the figure, axes and interaction_manager
-        return fig, ax, interaction_manager'''
+        return fig, ax, interaction_manager

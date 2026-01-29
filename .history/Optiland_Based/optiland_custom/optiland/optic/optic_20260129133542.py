@@ -34,9 +34,7 @@ from optiland.pickup import PickupManager
 from optiland.rays import PolarizationState
 from optiland.raytrace.real_ray_tracer import RealRayTracer
 from optiland.solves import SolveManager
-from optiland.sources.base import (
-    BaseSource,  # newly added by Ziyi Xiong adopted from Manuel
-)
+from optiland.sources.base import BaseSource  # newly added by Ziyi Xiong adopted from Manuel
 from optiland.surfaces import ObjectSurface, SurfaceGroup
 from optiland.visualization import (
     LensInfoViewer,
@@ -136,11 +134,11 @@ class Optic:
         self.paraxial: Paraxial = Paraxial(self)
         self.aberrations: Aberrations = Aberrations(self)
         self.ray_tracer: RealRayTracer = RealRayTracer(self)
-        '''self.ray_aiming_config = {
+        self.ray_aiming_config = {
             "mode": "paraxial",
             "max_iter": 10,
             "tol": 1e-6,
-        }''' # removed by Ziyi Xiong
+        }
 
         self.polarization: PolarizationState | Literal["ignore"] = "ignore"
 
@@ -546,13 +544,13 @@ class Optic:
         fields: list[tuple[float, float]] | Literal["all"] = "all",
         wavelengths: list[float] | Literal["primary"] = "primary",
         num_rays: int = 3,
-        distribution: DistributionType = "line_y", # changed by Ziyi Xiong
+        distribution: DistributionType | BaseDistribution | None = None, # changed by Ziyi Xiong
         figsize: tuple[float, float] = (10, 4),
         xlim: tuple[float, float] | None = None,
         ylim: tuple[float, float] | None = None,
         title: str | None = None,
         reference: ReferenceRay | None = None,
-        # projection: Literal["XY", "XZ", "YZ"] = "YZ", -- removed by Ziyi Xiong
+        projection: Literal["XY", "XZ", "YZ"] = "YZ",
     ) -> tuple[Figure, Axes]:
         """Draw a 2D representation of the optical system.
 
@@ -595,7 +593,7 @@ class Optic:
             ylim=ylim,
             title=title,
             reference=reference,
-            # projection=projection, -- removed by Ziyi Xiong
+            projection=projection,
         )
         return fig, ax
 

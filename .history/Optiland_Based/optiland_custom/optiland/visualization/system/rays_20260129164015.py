@@ -254,28 +254,7 @@ class Rays2D:
         self._process_traced_rays()
 
     # old def _update_surface_extents
-    def _update_surface_extents(self):
-        """Updates the extents of the surfaces in the optic's surface group."""
-        r_extent_new = be.copy(be.zeros_like(self.r_extent))
-        for i, surf in enumerate(self.optic.surface_group.surfaces):
-            # Handle both traditional rays and extended source rays
-            if len(self.x.shape) == 2:
-                # 2D array from extended sources: (num_surfaces, num_rays)
-                x_surf = self.x[i]
-                y_surf = self.y[i]
-                z_surf = self.z[i]
-            else:
-                # 1D array from traditional tracing
-                x_surf = self.x[i] if i < len(self.x) else 0
-                y_surf = self.y[i] if i < len(self.y) else 0
-                z_surf = self.z[i] if i < len(self.z) else 0
-
-            # Convert to local coordinate system
-            x, y, _ = transform(x_surf, y_surf, z_surf, surf, is_global=True)
-
-            r_extent_new[i] = be.nanmax(be.hypot(x, y))
-        self.r_extent = be.fmax(self.r_extent, r_extent_new)
-        
+    
     # new def _update_surface_extents
     '''def _update_surface_extents(self):
         """Updates the extents of the surfaces in the optic's surface group."""
@@ -374,27 +353,7 @@ class Rays2D:
             artists[artist] = ray_bundle
         return artists'''
 
-    # old def _plot_single_line
-    def _plot_single_line(self, ax, x, y, z, color_idx, linewidth=1):
-        """Plots a single line on the given axes.
-
-        Args:
-            ax (matplotlib.axes.Axes): The axes on which to plot the line.
-            x (array-like): The x-coordinates of the line.
-            y (array-like): The y-coordinates of the line.
-            z (array-like): The z-coordinates of the line.
-            color_idx (int): The index for the color to use for the line.
-            linewidth (float): The width of the line. Default is 1.
-
-        Returns:
-            None
-
-        """
-        color = f"C{color_idx}"
-        ax.plot(z, y, color, linewidth=linewidth)
-    
-    # new def _plot_single_line
-    '''def _plot_single_line(
+    def _plot_single_line(
         self, ax, x, y, z, color_idx, field, linewidth=1, theme=None, projection="YZ"
     ):
         """Plots a single line on the given axes.
@@ -427,7 +386,7 @@ class Rays2D:
             (line,) = ax.plot(z, x, color=color, linewidth=linewidth)
         else:  # YZ
             (line,) = ax.plot(z, y, color=color, linewidth=linewidth)
-        return line, RayBundle(x, y, z, field)'''
+        return line, RayBundle(x, y, z, field)
 
 
 class Rays3D(Rays2D):

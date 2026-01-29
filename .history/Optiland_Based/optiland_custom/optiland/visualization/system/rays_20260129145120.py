@@ -47,72 +47,8 @@ class Rays2D:
 
         n = optic.surface_group.num_surfaces
         self.r_extent = be.zeros(n)
-    
-    # new def plot by Manuel, added by Ziyi Xiong
-    
+
     def plot(
-        self,
-        ax,
-        fields="all",
-        wavelengths="primary",
-        num_rays=3,
-        distribution="line_y",
-        reference=None,
-    ):
-        """Plots the rays for the given fields and wavelengths.
-
-        If the optic has an extended source attached, it will automatically
-        use the source for ray generation instead of the traditional
-        field/wavelength approach.
-
-        Args:
-            ax: The matplotlib axis to plot on.
-            fields: The fields at which to trace the rays. Default is 'all'.
-                Ignored if extended source is attached.
-            wavelengths: The wavelengths at which to trace the rays.
-                Default is 'primary'. Ignored if extended source is attached.
-            num_rays: The number of rays to trace for each field and
-                wavelength, or total rays for extended source. Default is 3.
-            distribution: The distribution of the rays. Default is 'line_y'.
-                Ignored if extended source is attached.
-            reference (str, optional): The reference rays to plot. Options
-                include "chief" and "marginal". Defaults to None.
-                Ignored if extended source is attached.
-
-        """
-        # Check if an extended source is attached
-        if hasattr(self.optic, "source") and self.optic.source is not None:
-            # Use extended source for ray tracing
-            self._trace_extended_source(num_rays if num_rays > 3 else 100)
-            self._plot_lines(ax, 0)  # Use single color for all source rays
-        else:
-            # Use traditional field/wavelength approach
-            if fields == "all":
-                fields = self.optic.fields.get_field_coords()
-
-            if wavelengths == "primary":
-                wavelengths = [self.optic.wavelengths.primary_wavelength.value]
-
-            for i, field in enumerate(fields):
-                for j, wavelength in enumerate(wavelengths):
-                    # if only one field, use different colors for each wavelength
-                    color_idx = i if len(fields) > 1 else j
-
-                    if distribution is None:
-                        # trace only for surface extents
-                        self._trace(field, wavelength, num_rays, "line_y")
-                    else:
-                        # trace rays and plot lines
-                        self._trace(field, wavelength, num_rays, distribution)
-                        self._plot_lines(ax, color_idx)
-
-                    # trace reference rays and plot lines
-                    if reference is not None:
-                        self._trace_reference(field, wavelength, reference)
-                        self._plot_lines(ax, color_idx, linewidth=1.5)
-    
-    # old def plot
-    ''' def plot(
         self,
         ax,
         fields="all",
@@ -172,7 +108,7 @@ class Rays2D:
                             projection=projection,
                         )
                     )
-        return artists'''
+        return artists
 
     def _trace_extended_source(self, num_rays):
         """Traces rays from an extended source through the optical system.
@@ -253,31 +189,7 @@ class Rays2D:
 
         self._process_traced_rays()
 
-    # old def _update_surface_extents
     def _update_surface_extents(self):
-        """Updates the extents of the surfaces in the optic's surface group."""
-        r_extent_new = be.copy(be.zeros_like(self.r_extent))
-        for i, surf in enumerate(self.optic.surface_group.surfaces):
-            # Handle both traditional rays and extended source rays
-            if len(self.x.shape) == 2:
-                # 2D array from extended sources: (num_surfaces, num_rays)
-                x_surf = self.x[i]
-                y_surf = self.y[i]
-                z_surf = self.z[i]
-            else:
-                # 1D array from traditional tracing
-                x_surf = self.x[i] if i < len(self.x) else 0
-                y_surf = self.y[i] if i < len(self.y) else 0
-                z_surf = self.z[i] if i < len(self.z) else 0
-
-            # Convert to local coordinate system
-            x, y, _ = transform(x_surf, y_surf, z_surf, surf, is_global=True)
-
-            r_extent_new[i] = be.nanmax(be.hypot(x, y))
-        self.r_extent = be.fmax(self.r_extent, r_extent_new)
-        
-    # new def _update_surface_extents
-    '''def _update_surface_extents(self):
         """Updates the extents of the surfaces in the optic's surface group."""
         r_extent_new = be.copy(be.zeros_like(self.r_extent))
         for i, surf in enumerate(self.optic.surface_group.surfaces):
@@ -285,42 +197,9 @@ class Rays2D:
             x, y, _ = transform(self.x[i], self.y[i], self.z[i], surf, is_global=True)
 
             r_extent_new[i] = be.nanmax(be.hypot(x, y))
-        self.r_extent = be.fmax(self.r_extent, r_extent_new)'''
+        self.r_extent = be.fmax(self.r_extent, r_extent_new)
 
-    # old def _plot_lines
-    def _plot_lines(self, ax, color_idx, linewidth=1):
-        """Plots multiple lines on the given axis.
-
-        This method iterates through the rays stored in the object's attributes
-        (self.x, self.y, self.z, self.i) and plots each valid ray on the
-        provided axis. Rays that are outside the aperture (where self.i == 0)
-        are excluded from the plot.
-
-        Args:
-            ax (matplotlib.axes.Axes): The axis on which to plot the lines.
-            color_idx (int): The index used to determine the color of the
-                lines.
-
-        Returns:
-            None
-
-        """
-        # loop through rays
-        for k in range(self.z.shape[1]):
-            xk = be.to_numpy(self.x[:, k])
-            yk = be.to_numpy(self.y[:, k])
-            zk = be.to_numpy(self.z[:, k])
-            ik = be.to_numpy(self.i[:, k])
-
-            # remove rays outside aperture
-            xk[ik == 0] = np.nan
-            zk[ik == 0] = np.nan
-            yk[ik == 0] = np.nan
-
-            self._plot_single_line(ax, xk, yk, zk, color_idx, linewidth)
-    
-    # new def _plot_lines 
-    '''def _plot_lines(
+    def _plot_lines(
         self, ax, color_idx, field, linewidth=1, theme=None, projection="YZ"
     ):
         """Plots multiple lines on the given axis.
@@ -372,29 +251,9 @@ class Rays2D:
             )
             ray_bundle.bundle_id = bundle_id
             artists[artist] = ray_bundle
-        return artists'''
+        return artists
 
-    # old def _plot_single_line
-    def _plot_single_line(self, ax, x, y, z, color_idx, linewidth=1):
-        """Plots a single line on the given axes.
-
-        Args:
-            ax (matplotlib.axes.Axes): The axes on which to plot the line.
-            x (array-like): The x-coordinates of the line.
-            y (array-like): The y-coordinates of the line.
-            z (array-like): The z-coordinates of the line.
-            color_idx (int): The index for the color to use for the line.
-            linewidth (float): The width of the line. Default is 1.
-
-        Returns:
-            None
-
-        """
-        color = f"C{color_idx}"
-        ax.plot(z, y, color, linewidth=linewidth)
-    
-    # new def _plot_single_line
-    '''def _plot_single_line(
+    def _plot_single_line(
         self, ax, x, y, z, color_idx, field, linewidth=1, theme=None, projection="YZ"
     ):
         """Plots a single line on the given axes.
@@ -427,7 +286,7 @@ class Rays2D:
             (line,) = ax.plot(z, x, color=color, linewidth=linewidth)
         else:  # YZ
             (line,) = ax.plot(z, y, color=color, linewidth=linewidth)
-        return line, RayBundle(x, y, z, field)'''
+        return line, RayBundle(x, y, z, field)
 
 
 class Rays3D(Rays2D):

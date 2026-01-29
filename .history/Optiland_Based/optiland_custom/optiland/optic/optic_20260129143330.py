@@ -546,7 +546,7 @@ class Optic:
         fields: list[tuple[float, float]] | Literal["all"] = "all",
         wavelengths: list[float] | Literal["primary"] = "primary",
         num_rays: int = 3,
-        distribution: DistributionType = "line_y", # changed by Ziyi Xiong
+        distribution: DistributionType | BaseDistribution | None = None, # changed by Ziyi Xiong
         figsize: tuple[float, float] = (10, 4),
         xlim: tuple[float, float] | None = None,
         ylim: tuple[float, float] | None = None,

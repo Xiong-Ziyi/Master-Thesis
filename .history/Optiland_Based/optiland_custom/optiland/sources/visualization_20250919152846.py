@@ -10,8 +10,6 @@ The SourceViewer class creates a 3-panel plot showing:
 3. YZ ray propagation paths
 
 This helps users verify the spatial and angular properties of their sources.
-
-by Manuel
 """
 
 from __future__ import annotations

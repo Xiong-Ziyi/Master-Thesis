@@ -94,9 +94,13 @@ class BaseMaterial(ABC):
         cache_key = self._create_cache_key(wavelength, **kwargs)
 
         if cache_key in self._n_cache:
-            return self._n_cache[cache_key]
+            cached = self._n_cache[cache_key]
+            cached = self._align_to_backend(cached)
+            self._n_cache[cache_key] = cached
+            return cached
 
         result = self._calculate_n(wavelength, **kwargs)
+        result = self._align_to_backend(result) 
         self._n_cache[cache_key] = result
         return result
 
@@ -116,9 +120,13 @@ class BaseMaterial(ABC):
         cache_key = self._create_cache_key(wavelength, **kwargs)
 
         if cache_key in self._k_cache:
-            return self._k_cache[cache_key]
+            cached = self._k_cache[cache_key]
+            cached = self._align_to_backend(cached)
+            self._k_cache[cache_key] = cached
+            return cached
 
         result = self._calculate_k(wavelength, **kwargs)
+        result = self._align_to_backend(result)
         self._k_cache[cache_key] = result
         return result
 

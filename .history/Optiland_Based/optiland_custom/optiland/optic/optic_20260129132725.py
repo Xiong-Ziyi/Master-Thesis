@@ -34,9 +34,7 @@ from optiland.pickup import PickupManager
 from optiland.rays import PolarizationState
 from optiland.raytrace.real_ray_tracer import RealRayTracer
 from optiland.solves import SolveManager
-from optiland.sources.base import (
-    BaseSource,  # newly added by Ziyi Xiong adopted from Manuel
-)
+from optiland.sources.base import BaseSource  # newly added by Ziyi Xiong adopted from Manuel
 from optiland.surfaces import ObjectSurface, SurfaceGroup
 from optiland.visualization import (
     LensInfoViewer,
@@ -136,11 +134,11 @@ class Optic:
         self.paraxial: Paraxial = Paraxial(self)
         self.aberrations: Aberrations = Aberrations(self)
         self.ray_tracer: RealRayTracer = RealRayTracer(self)
-        '''self.ray_aiming_config = {
+        self.ray_aiming_config = {
             "mode": "paraxial",
             "max_iter": 10,
             "tol": 1e-6,
-        }''' # removed by Ziyi Xiong
+        }
 
         self.polarization: PolarizationState | Literal["ignore"] = "ignore"
 
@@ -149,9 +147,6 @@ class Optic:
         self.solves: SolveManager = SolveManager(self)
         self.obj_space_telecentric: bool = False
         self._updater = OpticUpdater(self)
-        
-        # Extended source, newly added by Ziyi Xiong, adopted from Manuel
-        self.source: BaseSource | None = None
 
     def __add__(self, other: Optic) -> Optic:
         """Add two Optic objects together.
@@ -546,13 +541,13 @@ class Optic:
         fields: list[tuple[float, float]] | Literal["all"] = "all",
         wavelengths: list[float] | Literal["primary"] = "primary",
         num_rays: int = 3,
-        distribution: DistributionType = "line_y", # changed by Ziyi Xiong
+        distribution: DistributionType | BaseDistribution | None = None, # changed by Ziyi Xiong
         figsize: tuple[float, float] = (10, 4),
         xlim: tuple[float, float] | None = None,
         ylim: tuple[float, float] | None = None,
         title: str | None = None,
         reference: ReferenceRay | None = None,
-        # projection: Literal["XY", "XZ", "YZ"] = "YZ", -- removed by Ziyi Xiong
+        projection: Literal["XY", "XZ", "YZ"] = "YZ",
     ) -> tuple[Figure, Axes]:
         """Draw a 2D representation of the optical system.
 
@@ -595,7 +590,7 @@ class Optic:
             ylim=ylim,
             title=title,
             reference=reference,
-            # projection=projection, -- removed by Ziyi Xiong
+            projection=projection,
         )
         return fig, ax
 
@@ -725,177 +720,7 @@ class Optic:
             source (BaseSource): The source source object
         """
         self.source = source
-    
-    def trace_source(self, num_rays: int):
-        """
-        Trace rays generated from the attached extended source.
-
-        This method generates rays using the attached source and traces them
-        through the optical system. The source must be set using set_source()
-        before calling this method.
-
-        Args:
-            num_rays (int): The number of rays to generate and trace.
-
-        Returns:
-            tuple: A tuple containing:
-                - RealRays: The traced rays (final positions)
-                - dict: Ray path data with 'x', 'y', 'z' arrays of shape
-                        (num_surfaces, num_rays)
-
-        Raises:
-            ValueError: If no source has been set.
-        """
-        if self.source is None:
-            raise ValueError(
-                "No source has been set. Use set_source() to attach a source "
-                "before calling trace_source()."
-            )
-
-        # Generate rays from the source
-        rays = self.source.generate_rays(num_rays)
-
-        # Trace the rays through the optical system
-        traced_rays = self.surface_group.trace(rays)
-
-        # Get the full ray path through all surfaces
-        ray_path = {
-            "x": self.surface_group.x,
-            "y": self.surface_group.y,
-            "z": self.surface_group.z,
-        }
-
-        return traced_rays, ray_path
-
-    def draw_source(
-        self,
-        num_rays: int = 1000,
-        figsize: tuple[float, float] = (10, 4),
-        xlim: tuple[float, float] | None = None,
-        ylim: tuple[float, float] | None = None,
-        title: str | None = None,
-    ) -> tuple[Figure, Axes]:
-        """
-        Draw a 2D representation of the optical system with rays from the
-        extended source.
-
-        This method traces rays from the attached extended source and visualizes them
-        through the optical system. The source must be set using set_source() before
-        calling this method.
-
-        Args:
-            num_rays (int, optional): The number of rays to generate and trace.
-                Defaults to 1000.
-            figsize (tuple[float, float], optional): The size of the figure.
-                Defaults to (10, 4).
-            xlim (tuple[float, float] | None, optional): The x-axis limits of
-                the plot. Defaults to None.
-            ylim (tuple[float, float] | None, optional): The y-axis limits of
-                the plot. Defaults to None.
-            title (str | None, optional): The title of the plot. Defaults to
-                None.
-
-        Returns:
-            tuple[Figure, Axes]: A tuple containing the matplotlib Figure and
-            Axes objects of the plot.
-
-        Raises:
-            ValueError: If no source has been set.
-        """
-        import matplotlib.pyplot as plt
-
-        if self.source is None:
-            raise ValueError(
-                "No source has been set. Use set_source() to attach a source "
-                "before calling draw_source()."
-            )
-
-        # Generate and trace rays from the source
-        traced_rays, ray_path = self.trace_source(num_rays)
-
-        # Create the plot
-        fig, ax = plt.subplots(figsize=figsize)
-
-        # Plot the optical system (surfaces) - we need to use the standard method
-        # to ensure proper surface extents are calculated
-        from optiland.visualization.system.optic_viewer import OpticViewer
-
-        viewer = OpticViewer(self)
-
-        # Use a minimal ray trace just to get surface extents
-        # Use the first field and primary wavelength from the system
-        if len(self.fields.fields) > 0:
-            field = self.fields.get_field_coords()[0]
-            wavelength = self.wavelengths.primary_wavelength.value
-
-            # Trace a few rays just to establish surface extents
-            viewer.rays._trace(field, wavelength, 3, "line_y")
-
-        # Now plot the system with proper extents
-        viewer.system.plot(ax)
-
-        # Plot the rays from the source using the ray path data
-        self._plot_source_rays(ax, ray_path, traced_rays)
-
-        ax.set_facecolor("#f8f9fa")  # off-white background
-        ax.axis("image")
-        ax.set_xlabel("Z [mm]")
-        ax.set_ylabel("Y [mm]")
-
-        if title:
-            ax.set_title(title)
-        else:
-            ax.set_title(f"Optical System with {type(self.source).__name__}")
-        if xlim:
-            ax.set_xlim(xlim)
-        if ylim:
-            ax.set_ylim(ylim)
-
-        plt.tight_layout()
-        return fig, ax
-
-    def _plot_source_rays(self, ax, ray_path, traced_rays):
-        """
-        Plot rays from the extended source on the given axis.
-
-        Args:
-            ax: The matplotlib axis to plot on.
-            ray_path: Dictionary with 'x', 'y', 'z' arrays of ray paths
-                     shape (num_surfaces, num_rays)
-            traced_rays: The traced rays object for intensity information
-        """
-
-        import optiland.backend as be
-
-        # Get ray path coordinates
-        y_coords = be.to_numpy(ray_path["y"])  # shape (num_surfaces, num_rays)
-        z_coords = be.to_numpy(ray_path["z"])  # shape (num_surfaces, num_rays)
-
-        # Get final ray intensities
-        intensities = be.to_numpy(traced_rays.i)  # shape (num_rays,)
-
-        if len(y_coords.shape) != 2 or len(z_coords.shape) != 2:
-            # Something is wrong with the ray path data
-            print(
-                f"Warning: Ray path data has unexpected shape: y={y_coords.shape}, "
-                f"z={z_coords.shape}"
-            )
-            return
-
-        num_surfaces, num_rays = y_coords.shape
-
-        # Plot each ray path
-        for k in range(num_rays):
-            # Skip rays that were completely blocked (no intensity)
-            if intensities[k] <= 0:
-                continue
-
-            # Get coordinates for ray k at all surfaces
-            y_path = y_coords[:, k]  # y coordinates through all surfaces
-            z_path = z_coords[:, k]  # z coordinates through all surfaces
-
-            # Plot the ray path (using z as x-axis, y as y-axis for 2D view)
-            ax.plot(z_path, y_path, "b-", alpha=0.3, linewidth=0.5)
+        self.ray_tracer.source = source
     
     ###################################################################################
 

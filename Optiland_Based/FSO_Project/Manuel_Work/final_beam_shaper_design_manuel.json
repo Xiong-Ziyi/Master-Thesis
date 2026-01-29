@@ -1,0 +1,424 @@
+{
+  "version": 1.0,
+  "aperture": {
+    "type": "objectNA",
+    "value": 0.15,
+    "object_space_telecentric": false
+  },
+  "fields": {
+    "fields": [
+      {
+        "field_type": "angle",
+        "x": 0.0,
+        "y": 0,
+        "vx": 0.0,
+        "vy": 0.0
+      }
+    ],
+    "telecentric": false,
+    "field_type": "angle",
+    "object_space_telecentric": false
+  },
+  "wavelengths": {
+    "wavelengths": [
+      {
+        "value": 1.55,
+        "is_primary": true,
+        "unit": "um",
+        "weight": 1.0
+      }
+    ],
+    "polarization": "ignore"
+  },
+  "apodization": null,
+  "pickups": [],
+  "solves": {
+    "solves": []
+  },
+  "surface_group": {
+    "surfaces": [
+      {
+        "type": "ObjectSurface",
+        "geometry": {
+          "type": "Plane",
+          "cs": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.0,
+            "rx": 0.0,
+            "ry": 0.0,
+            "rz": 0.0,
+            "reference_cs": null
+          },
+          "radius": Infinity
+        },
+        "material_post": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "comment": ""
+      },
+      {
+        "type": "Surface",
+        "geometry": {
+          "type": "Plane",
+          "cs": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "rx": 0.0,
+            "ry": 0.0,
+            "rz": 0.0,
+            "reference_cs": null
+          },
+          "radius": Infinity
+        },
+        "material_pre": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "material_post": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "is_stop": false,
+        "aperture": null,
+        "interaction_model": {
+          "type": "RefractiveReflectiveModel",
+          "is_reflective": false,
+          "coating": null,
+          "bsdf": null
+        }
+      },
+      {
+        "type": "Surface",
+        "geometry": {
+          "type": "Plane",
+          "cs": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 26.5,
+            "rx": 0.0,
+            "ry": 0.0,
+            "rz": 0.0,
+            "reference_cs": null
+          },
+          "radius": Infinity
+        },
+        "material_pre": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "material_post": {
+          "type": "Material",
+          "filename": "d:\\Msc.Photonics\\optiland\\optiland\\optiland\\database\\data-nk\\glass\\cdgm\\D-K9.yml",
+          "name": "D-K9",
+          "reference": "cdgm",
+          "robust_search": true,
+          "min_wavelength": null,
+          "max_wavelength": null
+        },
+        "is_stop": true,
+        "aperture": {
+          "type": "RadialAperture",
+          "r_max": 8.5,
+          "r_min": 0
+        },
+        "interaction_model": {
+          "type": "RefractiveReflectiveModel",
+          "is_reflective": false,
+          "coating": null,
+          "bsdf": null
+        }
+      },
+      {
+        "type": "Surface",
+        "geometry": {
+          "type": "ForbesQbfsGeometry",
+          "cs": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 30.5,
+            "rx": 0.0,
+            "ry": 0.0,
+            "rz": 0.0,
+            "reference_cs": null
+          },
+          "surface_config": {
+            "radius": 100000.0,
+            "conic": 0.0,
+            "norm_radius": 10.625,
+            "terms": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0,
+              "3": 0.0,
+              "4": 0.0,
+              "5": 0.0,
+              "6": 0.0,
+              "7": 0.0,
+              "8": 0.0,
+              "9": 0.0,
+              "10": 0.0,
+              "11": 0.0
+            }
+          },
+          "solver_config": {
+            "tol": 1e-06,
+            "max_iter": 100
+          }
+        },
+        "material_pre": {
+          "type": "Material",
+          "filename": "d:\\Msc.Photonics\\optiland\\optiland\\optiland\\database\\data-nk\\glass\\cdgm\\D-K9.yml",
+          "name": "D-K9",
+          "reference": "cdgm",
+          "robust_search": true,
+          "min_wavelength": null,
+          "max_wavelength": null
+        },
+        "material_post": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "is_stop": false,
+        "aperture": {
+          "type": "RadialAperture",
+          "r_max": 8.5,
+          "r_min": 0
+        },
+        "interaction_model": {
+          "type": "RefractiveReflectiveModel",
+          "is_reflective": false,
+          "coating": null,
+          "bsdf": null
+        }
+      },
+      {
+        "type": "Surface",
+        "geometry": {
+          "type": "Plane",
+          "cs": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 55.5,
+            "rx": 0.0,
+            "ry": 0.0,
+            "rz": 0.0,
+            "reference_cs": null
+          },
+          "radius": Infinity
+        },
+        "material_pre": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "material_post": {
+          "type": "Material",
+          "filename": "d:\\Msc.Photonics\\optiland\\optiland\\optiland\\database\\data-nk\\glass\\cdgm\\D-ZLAF52LA.yml",
+          "name": "D-ZLAF52LA",
+          "reference": "cdgm",
+          "robust_search": true,
+          "min_wavelength": null,
+          "max_wavelength": null
+        },
+        "is_stop": false,
+        "aperture": {
+          "type": "RadialAperture",
+          "r_max": 12.5,
+          "r_min": 0
+        },
+        "interaction_model": {
+          "type": "RefractiveReflectiveModel",
+          "is_reflective": false,
+          "coating": null,
+          "bsdf": null
+        }
+      },
+      {
+        "type": "Surface",
+        "geometry": {
+          "type": "ForbesQbfsGeometry",
+          "cs": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 62.5,
+            "rx": 0.0,
+            "ry": 0.0,
+            "rz": 0.0,
+            "reference_cs": null
+          },
+          "surface_config": {
+            "radius": -10000.0,
+            "conic": 0.0,
+            "norm_radius": 15.625,
+            "terms": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0,
+              "3": 0.0,
+              "4": 0.0,
+              "5": 0.0,
+              "6": 0.0,
+              "7": 0.0,
+              "8": 0.0,
+              "9": 0.0,
+              "10": 0.0,
+              "11": 0.0
+            }
+          },
+          "solver_config": {
+            "tol": 1e-06,
+            "max_iter": 100
+          }
+        },
+        "material_pre": {
+          "type": "Material",
+          "filename": "d:\\Msc.Photonics\\optiland\\optiland\\optiland\\database\\data-nk\\glass\\cdgm\\D-ZLAF52LA.yml",
+          "name": "D-ZLAF52LA",
+          "reference": "cdgm",
+          "robust_search": true,
+          "min_wavelength": null,
+          "max_wavelength": null
+        },
+        "material_post": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "is_stop": false,
+        "aperture": {
+          "type": "RadialAperture",
+          "r_max": 12.5,
+          "r_min": 0
+        },
+        "interaction_model": {
+          "type": "RefractiveReflectiveModel",
+          "is_reflective": false,
+          "coating": null,
+          "bsdf": null
+        }
+      },
+      {
+        "type": "Surface",
+        "geometry": {
+          "type": "Plane",
+          "cs": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 72.5,
+            "rx": 0.0,
+            "ry": 0.0,
+            "rz": 0.0,
+            "reference_cs": null
+          },
+          "radius": Infinity
+        },
+        "material_pre": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "material_post": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "is_stop": false,
+        "aperture": {
+          "type": "RectangularAperture",
+          "x_min": -11.25,
+          "x_max": 11.25,
+          "y_min": -11.25,
+          "y_max": 11.25
+        },
+        "interaction_model": {
+          "type": "RefractiveReflectiveModel",
+          "is_reflective": false,
+          "coating": null,
+          "bsdf": null
+        }
+      },
+      {
+        "type": "Surface",
+        "geometry": {
+          "type": "Plane",
+          "cs": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 72.5,
+            "rx": 0.0,
+            "ry": 0.0,
+            "rz": 0.0,
+            "reference_cs": null
+          },
+          "radius": Infinity
+        },
+        "material_pre": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "material_post": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "is_stop": false,
+        "aperture": null,
+        "interaction_model": {
+          "type": "RefractiveReflectiveModel",
+          "is_reflective": false,
+          "coating": null,
+          "bsdf": null
+        }
+      },
+      {
+        "type": "Surface",
+        "geometry": {
+          "type": "Plane",
+          "cs": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 75.5,
+            "rx": 0.0,
+            "ry": 0.0,
+            "rz": 0.0,
+            "reference_cs": null
+          },
+          "radius": Infinity
+        },
+        "material_pre": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "material_post": {
+          "type": "IdealMaterial",
+          "index": 1.0,
+          "absorp": 0.0
+        },
+        "is_stop": false,
+        "aperture": {
+          "type": "RectangularAperture",
+          "x_min": -11.25,
+          "x_max": 11.25,
+          "y_min": -11.25,
+          "y_max": 11.25
+        },
+        "interaction_model": {
+          "type": "RefractiveReflectiveModel",
+          "is_reflective": false,
+          "coating": null,
+          "bsdf": null
+        }
+      }
+    ]
+  }
+}

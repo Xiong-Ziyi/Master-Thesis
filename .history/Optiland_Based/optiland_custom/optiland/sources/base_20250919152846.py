@@ -4,8 +4,6 @@ Base Source Class Module
 This module defines the abstract base class for all source types in Optiland.
 All concrete source implementations must inherit from BaseSource and implement
 the generate_rays method.
-
-by Manuel
 """
 
 from __future__ import annotations

@@ -4,8 +4,6 @@ Gaussian Source Module
 This module implements a Gaussian source that generates rays based on a Gaussian
 intensity profile in both spatial and angular domains. The source uses quasi-random
 Sobol sequences for improved sampling quality and differentiable ray generation.
-
-by Manuel
 """
 
 from __future__ import annotations
